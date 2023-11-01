@@ -10,7 +10,7 @@ public class main
 
       Scanner scanner = new Scanner(System.in);
 
-      System.out.println("");
+      System.out.println();
       System.out.println("Welcome to Backgammon!");
 
       System.out.print("Enter the name of player 1: ");

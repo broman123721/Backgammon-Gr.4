@@ -10,6 +10,21 @@ class Game {
         this.player2 = player2;
     }
 
+    private boolean QuitOrRoll() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Do you want to roll the dice? (yes/no): ");
+        String choice = scanner.nextLine().toLowerCase();
+
+        if ("yes".equals(choice)) {
+            return true;
+        } else if ("no".equals(choice)) {
+            return false;
+        } //Maybe we should make an addition here or to the code later in case an invalid entry is put in?
+          //Exception class might be better we can discuss this on Thursday.
+        return false;
+    }
+
     public void playGame() {
         Scanner scanner = new Scanner(System.in);
 
@@ -28,6 +43,24 @@ class Game {
         } else {
             System.out.println(player2 + " goes first!");
         }
-    }
 
+        while (true) {
+            if (!QuitOrRoll()) {
+                System.out.println("Thanks for playing! Goodbye!");
+                break;
+            } else {
+                System.out.println("Rolling the dice...");
+                int[] diceValues = Die.rollDice();
+                int total = 0;
+                System.out.println("Die 1: " + diceValues[0]);
+                System.out.println("Die 2: " + diceValues[1]);
+
+                total = diceValues[0] + diceValues[1];
+                System.out.println("Total: " + total);
+            }
+        }
+    }
 }
+
+
+
