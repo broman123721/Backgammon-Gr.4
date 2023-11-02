@@ -52,13 +52,18 @@ class Game {
                 System.out.println("Rolling the dice...");
                 int[] diceValues = Die.rollDice();
                 int total = 0;
-                System.out.println("Die 1: " + diceValues[0]);
-                System.out.println("Die 2: " + diceValues[1]);
+
 
                 if(diceValues[0] == diceValues[1]){
                     System.out.println("You rolled a double!");
+                    System.out.println("Die 1: " + diceValues[0]);
+                    System.out.println("Die 2: " + diceValues[1]);
                     System.out.println("Die 3: " + diceValues[2]);
                     System.out.println("Die 4: " + diceValues[3]);
+                }
+                else{
+                    System.out.println("Die 1: " + diceValues[0]);
+                    System.out.println("Die 2: " + diceValues[1]);
                 }
 
                 total = diceValues[0] + diceValues[1] + diceValues[2] +diceValues[3];
