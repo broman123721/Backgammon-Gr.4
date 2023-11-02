@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Board
 {
     private Checker[][] Board_Checker2darr = new Checker[24][5];
@@ -7,6 +10,7 @@ public class Board
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_WHITE = "\u001B[37m";
+    public static final String ANSI_GREEN = "\u001B[34m";
     public Board(int stake_int)
     {
         this.stake_int=stake_int;
@@ -16,7 +20,17 @@ public class Board
     {
         for(int i=0;i <numCheckers;i++)
         {
-            this.Board_Checker2darr[index-1][i]=new Checker(Color);
+            if(Color.equals(ANSI_WHITE)) //Player 1
+            {
+                // Create Checker and set its color, index (1-24) and position up the stack
+                this.Board_Checker2darr[index-1][i]=new Checker(Color,index-1,i);
+            }
+            if(Color.equals(ANSI_RED))
+            {
+                // Create Checker and set its color, index (24-1) and position up the stack
+                this.Board_Checker2darr[index-1][i]=new Checker(Color,24-index,i);
+            }
+
         }
     }
     public void createBoard()
@@ -164,6 +178,137 @@ public class Board
 
                 }
                 break;
+        }
+        System.out.println();
+    }
+    public Checker returnTop(int index) // Returns Top value of selected index
+    {
+        Checker ret=new Checker("default",-100,-100);
+
+        for(int i=0;i<=4;i++)
+        {
+            if(Board_Checker2darr[index][0]==null)
+            {
+                ret = new Checker("Blank",index,-1); // if empty retunr checker with pos =-1
+                break;
+            }
+            if(Board_Checker2darr[index][i]==null)
+            {
+                break;
+            }
+            if(Board_Checker2darr[index][i]!=null)
+            {
+                ret = Board_Checker2darr[index][i];
+            }
+        }
+        return ret;
+    }
+    public boolean isSpaceAvailable(int playerMoving,int index_destination)
+    {
+        Checker  help=returnTop(index_destination);
+        boolean ret=false;
+
+        switch(playerMoving)
+        {
+            case(1): // We are playing as White therefore we are concerned about spots with two or more Red Checkers and full points
+                if((help.getColor_str().equals(ANSI_RED)&&(help.getPosition_int()>=1))||(help.getPosition_int()>=4))
+                {
+                    ret = false;
+                }
+                else
+                    ret= true;
+
+                break;
+
+            case(2): // We are playing as Red therefore we are concerned about spots with two or more White Checkers and full points
+                if((help.getColor_str().equals(ANSI_WHITE)&&(help.getPosition_int()>=1))||(help.getPosition_int()>=4))
+                {
+                    ret = false;
+                }
+                else
+                    ret= true;
+
+                break;
+            default:
+                ret=false;
+                break;
+        }
+        return ret;
+
+
+    }
+    public List<Integer> findFreeCheckers(int playerMoving)
+    {
+        List<Integer> ret = new ArrayList<>();
+
+        Checker  help=new Checker("default",-100,-100);
+        int u=0;
+        for(int i=0;i<=23;i++)
+        {
+            help=returnTop(i);
+            if(help.getPosition_int()>=0)
+            {
+                switch(playerMoving)
+                {
+                    case(1): // White moving (0-23 indexing)
+                        if(help.getColor_str().equals(ANSI_WHITE))
+                        {
+                            ret.add(u,i);
+                            u++;
+                            break;
+                        }
+                        else break;
+                    case(2):  // Red moving (23-0 indexing)
+                        if(help.getColor_str().equals(ANSI_RED))
+                        {
+                            ret.add(u,23-i);
+                            u++;
+                            break;
+                        }
+                        else break;
+                    default:
+                }
+
+            }
+        }
+
+    return ret;
+
+    }
+    void highlightCheckersandPrint(List<Integer> movablecheckers)
+    {
+        Checker help=new Checker("default",-100,-100);
+        String color;
+        int index;
+        int position;
+
+        for(int i=0;i<movablecheckers.size();i++)
+        {
+            help=returnTop(movablecheckers.get(i));
+            color=help.getColor_str();
+            position=help.getPosition_int();
+            index=help.getIndex_int();
+            this.Board_Checker2darr[index][position].setColor_str(ANSI_GREEN);
+            if(i==movablecheckers.size()-1)
+            {
+                if (color == ANSI_WHITE) // player 1
+                {
+                    this.printBoard(1);
+                }
+                if (color == ANSI_RED) // player 1
+                {
+                    this.printBoard(2);
+                }
+
+            }
+        }
+        for(int i=0;i<movablecheckers.size();i++)
+        {
+            help=returnTop(movablecheckers.get(i));
+            color=help.getColor_str();
+            position=help.getPosition_int();
+            index=help.getIndex_int();
+            this.Board_Checker2darr[index][position].setColor_str(color);
         }
     }
 

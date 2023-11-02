@@ -6,8 +6,8 @@ class Game {
     private String player2;
 
     public Game(String player1, String player2) {
-        this.player1 = player1;
-        this.player2 = player2;
+        this.player1 = player1; //White
+        this.player2 = player2; //Red
     }
 
     private boolean QuitOrRoll() {
