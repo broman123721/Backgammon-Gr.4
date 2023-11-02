@@ -6,7 +6,7 @@ public class main
     {
       Board myBoard=new Board(8);
       myBoard.createBoard();
-      myBoard.printBoard(2);
+      myBoard.printBoard(1);
 
       Scanner scanner = new Scanner(System.in);
 
