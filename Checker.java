@@ -1,8 +1,11 @@
+import java.util.List;
+
 public class Checker
 {
     private String color_str;
     private int index_int;
     private int position_int;
+
     public Checker (String color_str,int index_int,int position_int )
     {
         this.color_str=color_str;
