@@ -17,9 +17,14 @@ public class main
 
       Scanner scanner = new Scanner(System.in);
 
+
+      // START TEST CODE
+      Game backgammonGame = new Game("player1", "player2");
+      //backgammonGame.playGame();
       Checker a;
       List<Integer> arr = new ArrayList<>();
-      arr=myBoard.findFreeCheckers(2);
+      int[] dice={4,4,4,4}; //test
+      arr=myBoard.findFreeCheckers(2,dice);
       for(int i=0;i<arr.size();i++)
       {
           System.out.println(arr.get(i));
@@ -27,6 +32,9 @@ public class main
 
         myBoard.highlightCheckersandPrint(arr);
         myBoard.printBoard(1);
+
+        System.out.println("picked index"+backgammonGame.promptUserPick(arr));
+      //END TEST CODE
 
       // Comment for development
       /*System.out.println();
@@ -39,7 +47,7 @@ public class main
       String player2 = scanner.nextLine();
 
       Game backgammonGame = new Game(player1, player2);
-      backgammonGame.playGame();*/
+        backgammonGame.playGame();*/
 
     }
 

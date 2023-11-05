@@ -189,7 +189,7 @@ public class Board
         {
             if(Board_Checker2darr[index][0]==null)
             {
-                ret = new Checker("Blank",index,-1); // if empty retunr checker with pos =-1
+                ret = new Checker("Blank",index,-1); // if empty return checker with pos =-1
                 break;
             }
             if(Board_Checker2darr[index][i]==null)
@@ -237,7 +237,7 @@ public class Board
 
 
     }
-    public List<Integer> findFreeCheckers(int playerMoving)
+    public List<Integer> findFreeCheckers(int playerMoving,int[] dice)
     {
         List<Integer> ret = new ArrayList<>();
 
@@ -253,17 +253,25 @@ public class Board
                     case(1): // White moving (0-23 indexing)
                         if(help.getColor_str().equals(ANSI_WHITE))
                         {
-                            ret.add(u,i);
-                            u++;
-                            break;
+                            if(canMove(playerMoving,dice,i))
+                            {
+                                ret.add(u,i);
+                                u++;
+                                break;
+                            }
+
                         }
                         else break;
                     case(2):  // Red moving (23-0 indexing)
                         if(help.getColor_str().equals(ANSI_RED))
                         {
-                            ret.add(u,23-i);
-                            u++;
-                            break;
+                            if (canMove(playerMoving,dice,23-i))
+                            {
+                                ret.add(u,23-i);
+                                u++;
+                                break;
+                            }
+
                         }
                         else break;
                     default:
@@ -274,6 +282,47 @@ public class Board
 
     return ret;
 
+    }
+    boolean canMove(int playerMoving,int[] dice,int index) // calculates whether a checker at particular point can move with given dice
+    {
+        // all possible dice combinations are calculated and evaluated
+        int combinedpoints; //saves the current dice combination
+        boolean ret=false;
+        for(int i=0;i<=3;i++) // runs through all move combinations possible depending on dice
+        {
+           combinedpoints=0; // holds the amount of points to move with current move
+
+            for(int u=0;u<=i;u++) // for i=0 combinedpoints = dice[0] for i=1 combinedpoints = dice[0]+dice[1] ...
+            {
+                combinedpoints=combinedpoints+dice[u];
+            }
+            switch (playerMoving) // to distinguish between moving up and down the board
+            {
+                case(1): // player 1 moves from 0-23 hence index + combinedpoints
+                    if((index+combinedpoints<=23)&&(index+combinedpoints>=0)) //check for moves that would go out the playingfield
+                    {
+                        if(isSpaceAvailable(playerMoving,index+combinedpoints))// checks if checker could move here
+                        {
+                            ret = true;
+                            break;
+                        }
+                    }
+                case(2): // player 2 moves from 0-23 hence index - combinedpoints
+                    if((index-combinedpoints<=23)&&(index-combinedpoints>=0))
+                    {
+                        if(isSpaceAvailable(playerMoving,index-combinedpoints))
+                        {
+                            ret = true;
+                            break;
+                        }
+                    }
+
+                default:
+                    break;
+            }
+
+        }
+        return ret;
     }
     void highlightCheckersandPrint(List<Integer> movablecheckers)
     {
@@ -310,6 +359,13 @@ public class Board
             index=help.getIndex_int();
             this.Board_Checker2darr[index][position].setColor_str(color);
         }
+    }
+    List<Integer> calculateMoves(int pickedChecker, int[] dice) // calculates all the places that checker can move to
+    {
+        List<Integer> ret = new ArrayList<>();
+        //if()
+
+        return ret;
     }
 
 }

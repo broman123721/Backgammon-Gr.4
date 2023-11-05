@@ -1,3 +1,5 @@
+import javax.swing.*;
+import java.util.List;
 import java.util.Scanner;
 
 class Game {
@@ -70,6 +72,27 @@ class Game {
                 System.out.println("Total: " + total);
             }
         }
+    }
+    public int promptUserPick(List<Integer> movableCheckers)
+    {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println();
+        for(int i =0;i<movableCheckers.size();i++)
+        {
+            System.out.println("Enter "+(i+1)+" to move Checker at position "+(movableCheckers.get(i)+1));
+        }
+        System.out.println();
+        String choice = scanner.nextLine();
+        int choice_int =Integer.parseInt(choice)-1; // remove offset from prompt
+        if((choice_int>=0)&&(choice_int<movableCheckers.size()))
+        {
+            return movableCheckers.get(choice_int);
+        }
+        else
+        {
+            return -1;
+        }
+
     }
 }
 
