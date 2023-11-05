@@ -21,28 +21,30 @@ public class main
 
 
       // START TEST CODE
-      Game backgammonGame = new Game("player1", "player2");
+      Game backgammonGame = new Game("player1", "player2"); //new game with fixed playernames for easy debugging
       //backgammonGame.playGame();
       Checker a;
       List<Integer> arr = new ArrayList<>();
       List<Integer> destination = new ArrayList<>();
-      int[] dice={4,4,4,4}; //test
-      arr=myBoard.findFreeCheckers(2,dice);
+      int[] dice={4,4,4,4}; //sample dice to test calcmoves
+      arr=myBoard.findFreeCheckers(2,dice); // arr contains all free checkerindices for player2 now (0 based)
+
       for(int i=0;i<arr.size();i++)
       {
-          System.out.println(arr.get(i));
+          System.out.println("Free Checker at "+arr.get(i));
       }
 
-        myBoard.highlightCheckersandPrint(arr);
-        myBoard.printBoard(2);
-        int pickedChecker=backgammonGame.promptUserPick(arr,2);
-        System.out.println("picked index"+pickedChecker);
+        myBoard.highlightCheckersandPrint(arr); // highlights checkers
+
+        int pickedChecker=backgammonGame.promptUserPick(arr,2); // ask user to pick checker
+        System.out.println("picked array index. "+pickedChecker);
+        System.out.println("picked checkernumber for player2: "+(24-pickedChecker));
         destination=myBoard.calculateMoves(pickedChecker,dice,2);
 
         for(int i=0;i<destination.size();i++)
         {
 
-            System.out.println(24-destination.get(i));
+            System.out.println("This Checker can move to: "+(24-destination.get(i)));
         }
       //END TEST CODE
 
