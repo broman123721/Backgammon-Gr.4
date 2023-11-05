@@ -10,7 +10,7 @@ public class Board
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_WHITE = "\u001B[37m";
-    public static final String ANSI_GREEN = "\u001B[34m";
+    public static final String ANSI_BLUE = "\u001B[34m";
     public Board(int stake_int)
     {
         this.stake_int=stake_int;
@@ -28,7 +28,7 @@ public class Board
             if(Color.equals(ANSI_RED))
             {
                 // Create Checker and set its color, index (24-1) and position up the stack
-                this.Board_Checker2darr[index-1][i]=new Checker(Color,24-index,i);
+                this.Board_Checker2darr[index-1][i]=new Checker(Color,index-1,i);
             }
 
         }
@@ -49,9 +49,11 @@ public class Board
 
     public void printBoard(int playerTurn) //depending on playerturn the numbers will be printed 1 = Red 2 = White
     {
+        System.out.println();
         // Print point number Top
         switch (playerTurn)
         {
+
             case(1):
                 for(int i=12;i<=23;i++)
                 {
@@ -181,7 +183,7 @@ public class Board
         }
         System.out.println();
     }
-    public Checker returnTop(int index) // Returns Top value of selected index
+    public Checker returnTop(int index) // Returns Top value of selected index (0-23)
     {
         Checker ret=new Checker("default",-100,-100);
 
@@ -246,11 +248,11 @@ public class Board
         for(int i=0;i<=23;i++)
         {
             help=returnTop(i);
-            if(help.getPosition_int()>=0)
+            if(help.getPosition_int()>=0) // At least one checker at the index
             {
                 switch(playerMoving)
                 {
-                    case(1): // White moving (0-23 indexing)
+                    case(1): // White moving
                         if(help.getColor_str().equals(ANSI_WHITE))
                         {
                             if(canMove(playerMoving,dice,i))
@@ -259,15 +261,14 @@ public class Board
                                 u++;
                                 break;
                             }
-
                         }
                         else break;
-                    case(2):  // Red moving (23-0 indexing)
+                    case(2):  // Red moving
                         if(help.getColor_str().equals(ANSI_RED))
                         {
-                            if (canMove(playerMoving,dice,23-i))
+                            if (canMove(playerMoving,dice,i))
                             {
-                                ret.add(u,23-i);
+                                ret.add(u,i);
                                 u++;
                                 break;
                             }
@@ -298,19 +299,19 @@ public class Board
             }
             switch (playerMoving) // to distinguish between moving up and down the board
             {
-                case(1): // player 1 moves from 0-23 hence index + combinedpoints
-                    if((index+combinedpoints<=23)&&(index+combinedpoints>=0)) //check for moves that would go out the playingfield
+                case(1): // player 1 moves from 23 to 0 hence index - combinedpoints
+                    if((index-combinedpoints<=23)&&(index-combinedpoints>=0)) //check for moves that would go out the playingfield
                     {
-                        if(isSpaceAvailable(playerMoving,index+combinedpoints))// checks if checker could move here
+                        if(isSpaceAvailable(playerMoving,index-combinedpoints))// checks if checker could move here
                         {
                             ret = true;
                             break;
                         }
                     }
-                case(2): // player 2 moves from 0-23 hence index - combinedpoints
-                    if((index-combinedpoints<=23)&&(index-combinedpoints>=0))
+                case(2): // player 2 moves from 0-23 hence index + combinedpoints
+                    if((index+combinedpoints<=23)&&(index+combinedpoints>=0))
                     {
-                        if(isSpaceAvailable(playerMoving,index-combinedpoints))
+                        if(isSpaceAvailable(playerMoving,index+combinedpoints))
                         {
                             ret = true;
                             break;
@@ -331,27 +332,27 @@ public class Board
         int index;
         int position;
 
-        for(int i=0;i<movablecheckers.size();i++)
+        for(int i=0;i<movablecheckers.size();i++) // run through all movable checkers
         {
-            help=returnTop(movablecheckers.get(i));
+            help=returnTop(movablecheckers.get(i)); // extract top checker and find out whose it is
             color=help.getColor_str();
             position=help.getPosition_int();
             index=help.getIndex_int();
-            this.Board_Checker2darr[index][position].setColor_str(ANSI_GREEN);
-            if(i==movablecheckers.size()-1)
+            this.Board_Checker2darr[index][position].setColor_str(ANSI_BLUE); //temporarily color top checker
+            if(i==movablecheckers.size()-1) //print board depending on whose checkers are moved
             {
                 if (color == ANSI_WHITE) // player 1
                 {
                     this.printBoard(1);
                 }
-                if (color == ANSI_RED) // player 1
+                if (color == ANSI_RED) // player 2
                 {
                     this.printBoard(2);
                 }
 
             }
         }
-        for(int i=0;i<movablecheckers.size();i++)
+        for(int i=0;i<movablecheckers.size();i++) // restore color for top checker
         {
             help=returnTop(movablecheckers.get(i));
             color=help.getColor_str();
@@ -360,10 +361,19 @@ public class Board
             this.Board_Checker2darr[index][position].setColor_str(color);
         }
     }
-    List<Integer> calculateMoves(int pickedChecker, int[] dice) // calculates all the places that checker can move to
+    List<Integer> calculateMoves(int pickedChecker, int[] dice,int playerMoving) // calculates all the places that checker can move to
     {
         List<Integer> ret = new ArrayList<>();
-        //if()
+        //TODO BEARING OFF if all in last quarter
+        boolean bearingoffcondition=false;
+        if(bearingoffcondition)
+        {
+
+        }
+        else //normal moving
+        {
+
+        }
 
         return ret;
     }

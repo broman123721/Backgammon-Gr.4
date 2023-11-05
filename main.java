@@ -5,7 +5,7 @@ import java.util.Scanner;
 // Player 1 = White Numbers go from 1-24 (bottom right to top left)
 // Player 2 = Red Numbers go from 24-1 (top left to bottom right)
 
-// Index = across the board 0-23
+// Index = across the board 0-23 (for simplicity- Player 2 will still be indexed 0-23 within the program and will be converted once displayed to the player)
 // Position = within lane 0-4
 public class main
 {
@@ -31,9 +31,9 @@ public class main
       }
 
         myBoard.highlightCheckersandPrint(arr);
-        myBoard.printBoard(1);
+        myBoard.printBoard(2);
 
-        System.out.println("picked index"+backgammonGame.promptUserPick(arr));
+        System.out.println("picked index"+backgammonGame.promptUserPick(arr,2));
       //END TEST CODE
 
       // Comment for development

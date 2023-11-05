@@ -73,13 +73,21 @@ class Game {
             }
         }
     }
-    public int promptUserPick(List<Integer> movableCheckers)
+    public int promptUserPick(List<Integer> movableCheckers,int playerMoving)
     {
         Scanner scanner = new Scanner(System.in);
         System.out.println();
         for(int i =0;i<movableCheckers.size();i++)
         {
-            System.out.println("Enter "+(i+1)+" to move Checker at position "+(movableCheckers.get(i)+1));
+            if(playerMoving==1)
+            {
+                System.out.println("Enter "+(i+1)+" to move Checker at position "+(movableCheckers.get(i)+1));
+            }
+            if(playerMoving==2)
+            {
+                System.out.println("Enter "+(i+1)+" to move Checker at position "+(24-(movableCheckers.get(i))));
+            }
+
         }
         System.out.println();
         String choice = scanner.nextLine();
