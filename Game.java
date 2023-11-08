@@ -48,8 +48,15 @@ class Game {
 
         while (true) {
             if (!QuitOrRoll()) {
-                System.out.println("Thanks for playing! Goodbye!");
-                break;
+                Scanner QuitOrContinue = new Scanner(System.in);
+                System.out.println("Would you like to quit the game? (yes/no):");
+                String choice = QuitOrContinue.nextLine().toLowerCase();
+
+                if ("yes".equals(choice)) {
+                    System.out.println("Thanks for playing! Goodbye!! :)");
+                    break;
+                } else if ("no".equals(choice)) continue;
+
             } else {
                 System.out.println("Rolling the dice...");
                 int[] diceValues = Die.rollDice();
