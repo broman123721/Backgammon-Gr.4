@@ -238,7 +238,7 @@ public class Board
         }
         return ret;
 
-
+//
     }
     public List<Integer> findFreeCheckers(int playerMoving,int[] dice)
     {
