@@ -40,12 +40,17 @@ public class main
         System.out.println("picked array index. "+pickedChecker);
         System.out.println("picked checkernumber for player2: "+(24-pickedChecker));
         destination=myBoard.calculateMoves(pickedChecker,dice,2);
+        int pickch = 24-pickedChecker; //for player 2 maybe we need to implement this to automatically be done in our function
 
-        for(int i=0;i<destination.size();i++)
-        {
+        for(int i=0;i<destination.size();i++) {
 
-            System.out.println("This Checker can move to: "+(24-destination.get(i)));
+          System.out.println("This Checker can move to: " + (24 - destination.get(i))); //maybe put this in a variable
+                                                                                       // dest = 24 - destination.get(i)
+
         }
+      //Damis Edits
+      myBoard.makeMove(pickch, destination,2);
+    }
       //END TEST CODE
 
       // Comment for development
@@ -65,4 +70,4 @@ public class main
 
 
 
-}
+
