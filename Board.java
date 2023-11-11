@@ -243,6 +243,7 @@ public class Board
     public List<Integer> findFreeCheckers(int playerMoving,int[] dice)
     {
         List<Integer> ret = new ArrayList<>();
+        List<Integer> destinations=new ArrayList<>();
 
         Checker  help=new Checker("default",-100,-100);
         int u=0;
@@ -256,7 +257,8 @@ public class Board
                     case(1): // White moving
                         if(help.getColor_str().equals(ANSI_WHITE))
                         {
-                            if(canMove(playerMoving,dice,i))
+                            destinations  = calculateMoves(i,dice,playerMoving);
+                            if(!destinations.isEmpty())
                             {
                                 ret.add(u,i);
                                 u++;
@@ -267,7 +269,9 @@ public class Board
                     case(2):  // Red moving
                         if(help.getColor_str().equals(ANSI_RED))
                         {
-                            if (canMove(playerMoving,dice,i))
+                            destinations  = calculateMoves(i,dice,playerMoving);
+                            int l=3;
+                            if (!destinations.isEmpty())
                             {
                                 ret.add(u,i);
                                 u++;
@@ -285,47 +289,7 @@ public class Board
     return ret;
 
     }
-    boolean canMove(int playerMoving,int[] dice,int index) // calculates whether a checker at particular point can move with given dice
-    {
-        // all possible dice combinations are calculated and evaluated
-        int combinedpoints; //saves the current dice combination
-        boolean ret=false;
-        for(int i=0;i<=3;i++) // runs through all move combinations possible depending on dice
-        {
-           combinedpoints=0; // holds the amount of points to move with current move
 
-            for(int u=0;u<=i;u++) // for i=0 combinedpoints = dice[0] for i=1 combinedpoints = dice[0]+dice[1] ...
-            {
-                combinedpoints=combinedpoints+dice[u];
-            }
-            switch (playerMoving) // to distinguish between moving up and down the board
-            {
-                case(1): // player 1 moves from 23 to 0 hence index - combinedpoints
-                    if((index-combinedpoints<=23)&&(index-combinedpoints>=0)) //check for moves that would go out the playingfield
-                    {
-                        if(isSpaceAvailable(playerMoving,index-combinedpoints))// checks if checker could move here
-                        {
-                            ret = true;
-                            break;
-                        }
-                    }
-                case(2): // player 2 moves from 0-23 hence index + combinedpoints
-                    if((index+combinedpoints<=23)&&(index+combinedpoints>=0))
-                    {
-                        if(isSpaceAvailable(playerMoving,index+combinedpoints))
-                        {
-                            ret = true;
-                            break;
-                        }
-                    }
-
-                default:
-                    break;
-            }
-
-        }
-        return ret;
-    }
     void highlightCheckersandPrint(List<Integer> movablecheckers)
     {
         Checker help=new Checker("default",-100,-100);
@@ -364,6 +328,8 @@ public class Board
     }
     List<Integer> calculateMoves(int pickedChecker, int[] dice,int playerMoving) // calculates all the places that checker can move to
     {
+        int destination_p1=0;
+        int destination_p2=0;
         List<Integer> destinations = new ArrayList<>(4);
         //TODO BEARING OFF if all in last quarter, move could be to destination -1 and in makeMove() have a if(destination==-1) --> bear off
         boolean bearingoffcondition=false;
@@ -375,40 +341,53 @@ public class Board
         {
             // all possible dice combinations are calculated and evaluated
             int combinedpoints; //saves the current dice combination
-            int index=0;
+            int destination_index =0;
+
             for(int i=0;i<=3;i++) // runs through all move combinations possible depending on dice
             {
+                destination_p1=pickedChecker;
+                destination_p2=pickedChecker;
                 combinedpoints=0; // holds the amount of points to move with current move
 
                 for(int u=0;u<=i;u++) // for i=0 combinedpoints = dice[0] for i=1 combinedpoints = dice[0]+dice[1] ...
                 {
                     combinedpoints=combinedpoints+dice[u];
                 }
-                switch (playerMoving) // to distinguish between moving up and down the board
+                for(int m=0 ;m<combinedpoints;m++)
                 {
-                    case(1): // player 1 moves from 23 to 0 hence index - combinedpoints
-                        if((pickedChecker-combinedpoints<=23)&&(pickedChecker-combinedpoints>=0)) //check for moves that would go out the playingfield
+                    destination_p1=destination_p1-1;
+                    destination_p2=destination_p2+1;
+                }
+                if(destination_p1==-1)
+                {
+                    destination_p1=0;
+                }
+                if(destination_p2==24)
+                {
+                    destination_p1=23;
+                }
+                if(playerMoving==1) // player 1 moves from 23 to 0 hence destination_index - combinedpoints
+                {
+                    if (destination_p1 >= 0) //check for moves that would go out the playingfield
+                    {
+                        if (isSpaceAvailable(playerMoving, destination_p1))// checks if checker could move here
                         {
-                            if(isSpaceAvailable(playerMoving,pickedChecker-combinedpoints))// checks if checker could move here
-                            {
-                                destinations.add(index,pickedChecker-combinedpoints);
-                                index++;
-                                break;
-                            }
+                            destinations.add(destination_index, destination_p1);
+                            destination_index++;
                         }
-                    case(2): // player 2 moves from 0-23 hence index + combinedpoints
-                        if((pickedChecker+combinedpoints<=23)&&(pickedChecker+combinedpoints>=0))
+                    }
+                }
+                if(playerMoving==2)
+                {
+                    if(destination_p2<=23)
+                    {
+                        if(isSpaceAvailable(playerMoving,destination_p2))
                         {
-                            if(isSpaceAvailable(playerMoving,pickedChecker+combinedpoints))
-                            {
-                                destinations.add(index,pickedChecker+combinedpoints);
-                                index++;
-                                break;
-                            }
+                            destinations.add(destination_index, destination_p2);
+                            destination_index++;
                         }
+                    }
 
-                    default:
-                        break;
                 }
 
             }
