@@ -15,19 +15,19 @@ public class main
     {
       int player =2;
 
-      Board myBoard=new Board(8);
-      myBoard.createBoard();
-      myBoard.printBoard(player);
+      //Board myBoard=new Board(8);
+      //myBoard.createBoard();
+      //myBoard.printBoard(player);
 
-      Scanner scanner = new Scanner(System.in);
+      //Scanner scanner = new Scanner(System.in);
 
 
       // START TEST CODE
       Game backgammonGame = new Game("player1", "player2"); //new game with fixed playernames for easy debugging
-      //backgammonGame.playGame();
+      backgammonGame.playGame();
 
-      List<Integer> freeCheckers = new ArrayList<>();
-      List<Integer> destination = new ArrayList<>();
+      //List<Integer> freeCheckers = new ArrayList<>();
+      /*List<Integer> destination = new ArrayList<>();
       int[] dice={4,4,4,4}; //sample dice to test calcmoves
       freeCheckers =myBoard.findFreeCheckers(player,dice); // freeCheckers contains all free checkerindices for player2 now (0 based)
 
@@ -36,8 +36,8 @@ public class main
           System.out.println("Free Checker at "+ freeCheckers.get(i));
       }
 
-        myBoard.highlightCheckersandPrint(freeCheckers); // highlights checkers
-
+        myBoard.highlightCheckersandPrint(freeCheckers,player); // highlights checkers
+        myBoard.printBoard(player);
         int pickedChecker=backgammonGame.promptUserPick(freeCheckers,player); // ask user to pick checker
 
         System.out.println("picked array index. "+pickedChecker);
@@ -51,7 +51,9 @@ public class main
 
         }
       //Damis Edits
-      myBoard.makeMove(pickedChecker,destination,player);
+      int destinationindex=myBoard.makeMove(pickedChecker,destination,player);
+      myBoard.highlightOneheckerandPrint(destinationindex,player);
+*/
     }
       //END TEST CODE
 
@@ -68,7 +70,7 @@ public class main
       Game backgammonGame = new Game(player1, player2);
         backgammonGame.playGame();*/
 
-    }
+}
 
 
 

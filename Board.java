@@ -12,6 +12,7 @@ public class Board
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_WHITE = "\u001B[37m";
     public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_GREEN = "\u001B[32m";
     public Board(int stake_int)
     {
         this.stake_int=stake_int;
@@ -289,8 +290,23 @@ public class Board
     return ret;
 
     }
+    void highlightOneheckerandPrint(int index,int playerMoving)
+    {
+        Checker help=returnTop(index);
+        int position=help.getPosition_int();
+        this.Board_Checker2darr[index][position].setColor_str(ANSI_GREEN);
+        printBoard(playerMoving);
+        if(playerMoving==1)
+        {
+            this.Board_Checker2darr[index][position].setColor_str(ANSI_WHITE);
+        }
+        if(playerMoving==2)
+        {
+            this.Board_Checker2darr[index][position].setColor_str(ANSI_RED);
+        }
 
-    void highlightCheckersandPrint(List<Integer> movablecheckers)
+    }
+    void highlightCheckersandPrint(List<Integer> movablecheckers,int playerMoving)
     {
         Checker help=new Checker("default",-100,-100);
         String color;
@@ -304,26 +320,26 @@ public class Board
             position=help.getPosition_int();
             index=help.getIndex_int();
             this.Board_Checker2darr[index][position].setColor_str(ANSI_BLUE); //temporarily color top checker
+
             if(i==movablecheckers.size()-1) //print board depending on whose checkers are moved
             {
-                if (color == ANSI_WHITE) // player 1
-                {
-                    this.printBoard(1);
-                }
-                if (color == ANSI_RED) // player 2
-                {
-                    this.printBoard(2);
-                }
-
+               printBoard(playerMoving);
             }
         }
+
         for(int i=0;i<movablecheckers.size();i++) // restore color for top checker
         {
             help=returnTop(movablecheckers.get(i));
-            color=help.getColor_str();
             position=help.getPosition_int();
             index=help.getIndex_int();
-            this.Board_Checker2darr[index][position].setColor_str(color);
+            if(playerMoving==1)
+            {
+                this.Board_Checker2darr[index][position].setColor_str(ANSI_WHITE);
+            }
+            if(playerMoving==2)
+            {
+                this.Board_Checker2darr[index][position].setColor_str(ANSI_RED);
+            }
         }
     }
     List<Integer> calculateMoves(int pickedChecker, int[] dice,int playerMoving) // calculates all the places that checker can move to
@@ -343,54 +359,109 @@ public class Board
             int combinedpoints; //saves the current dice combination
             int destination_index =0;
 
-            for(int i=0;i<=3;i++) // runs through all move combinations possible depending on dice
+            if(dice[0]==dice[1]) // combinations dice[0], [0]+[1], [0]+[1]+[2], [0]+[1}+[2]+[3]
             {
-                destination_p1=pickedChecker;
-                destination_p2=pickedChecker;
-                combinedpoints=0; // holds the amount of points to move with current move
+                for(int i=0;i<=3;i++) // runs through all move combinations possible depending on dice
+                {
+                    destination_p1=pickedChecker;
+                    destination_p2=pickedChecker;
+                    combinedpoints=0; // holds the amount of points to move with current move
 
-                for(int u=0;u<=i;u++) // for i=0 combinedpoints = dice[0] for i=1 combinedpoints = dice[0]+dice[1] ...
-                {
-                    combinedpoints=combinedpoints+dice[u];
-                }
-                for(int m=0 ;m<combinedpoints;m++)
-                {
-                    destination_p1=destination_p1-1;
-                    destination_p2=destination_p2+1;
-                }
-                if(destination_p1==-1)
-                {
-                    destination_p1=0;
-                }
-                if(destination_p2==24)
-                {
-                    destination_p1=23;
-                }
-                if(playerMoving==1) // player 1 moves from 23 to 0 hence destination_index - combinedpoints
-                {
-                    if (destination_p1 >= 0) //check for moves that would go out the playingfield
+                    for(int u=0;u<=i;u++)
                     {
-                        if (isSpaceAvailable(playerMoving, destination_p1))// checks if checker could move here
+                        combinedpoints=combinedpoints+dice[u];
+                    }
+                    for(int m=0 ;m<combinedpoints;m++)
+                    {
+                        destination_p1=destination_p1-1;
+                        destination_p2=destination_p2+1;
+                    }
+                    if(destination_p1==-1)
+                    {
+                        destination_p1=0;
+                    }
+                    if(destination_p2==24)
+                    {
+                        destination_p1=23;
+                    }
+                    if(playerMoving==1) // player 1 moves from 23 to 0 hence destination_index - combinedpoints
+                    {
+                        if (destination_p1 >= 0) //check for moves that would go out the playingfield
                         {
-                            destinations.add(destination_index, destination_p1);
-                            destination_index++;
+                            if (isSpaceAvailable(playerMoving, destination_p1))// checks if checker could move here
+                            {
+                                destinations.add(destination_index, destination_p1);
+                                destination_index++;
+                            }
                         }
                     }
-                }
-                if(playerMoving==2)
-                {
-                    if(destination_p2<=23)
+                    if(playerMoving==2)
                     {
-                        if(isSpaceAvailable(playerMoving,destination_p2))
+                        if(destination_p2<=23)
                         {
-                            destinations.add(destination_index, destination_p2);
-                            destination_index++;
+                            if(isSpaceAvailable(playerMoving,destination_p2))
+                            {
+                                destinations.add(destination_index, destination_p2);
+                                destination_index++;
+                            }
                         }
+
+                    }
+
+                }
+            }
+            if(dice[0]!=dice[1]) // Combiantions of dice dice[0], dice[1], dice[0]+dice[1]
+            {
+                int []combinations =new int[] {dice[0],dice[1],dice[0]+dice[1]};
+                for(int i=0;i<=2;i++)
+                {
+                    destination_p1=pickedChecker;
+                    destination_p2=pickedChecker;
+
+                    for(int m=0 ;m<combinations[i];m++)
+                    {
+                        destination_p1=destination_p1-1;
+                        destination_p2=destination_p2+1;
+                    }
+                    if(destination_p1==-1)
+                    {
+                        destination_p1=0;
+                    }
+                    if(destination_p2==24)
+                    {
+                        destination_p1=23;
+                    }
+
+                    if(playerMoving==1) // player 1 moves from 23 to 0 hence destination_index - combinedpoints
+                    {
+                        if (destination_p1 >= 0) //check for moves that would go out the playingfield
+                        {
+                            if (isSpaceAvailable(playerMoving, destination_p1))// checks if checker could move here
+                            {
+                                destinations.add(destination_index, destination_p1);
+                                destination_index++;
+                            }
+                        }
+                    }
+                    if(playerMoving==2)
+                    {
+                        if(destination_p2<=23)
+                        {
+                            if(isSpaceAvailable(playerMoving,destination_p2))
+                            {
+                                destinations.add(destination_index, destination_p2);
+                                destination_index++;
+                            }
+                        }
+
                     }
 
                 }
 
             }
+
+
+
 
         }
 
@@ -403,26 +474,27 @@ public class Board
 
         // Place the checker we want to move on top of the highest one at the destination
         Board_Checker2darr[toIndex][topCheckerTo.getPosition_int()+1] = Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()];
-
         // Remove the checker from the current position
         Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()] = null;
+        // Reassign index and position
+        Board_Checker2darr[toIndex][topCheckerTo.getPosition_int()+1].setPosition_int(topCheckerTo.getPosition_int()+1);
+        Board_Checker2darr[toIndex][topCheckerTo.getPosition_int()+1].setIndex_int(toIndex);
+
+
 
         // Print the updated board
-        if (playerMoving == 1) {
-            printBoard(1);
-        } else if (playerMoving == 2) {
-            printBoard(2);
-        }
+        this.highlightOneheckerandPrint(toIndex,playerMoving);
+
     }
 
-   public void makeMove(int pickedChecker ,List<Integer> destinations, int playerMoving)
+   public int makeMove(int pickedChecker ,List<Integer> destinations, int playerMoving)
    {
-       boolean succesfullPick=true;
+       boolean succesfullPick=false;
 
        Scanner scanner = new Scanner(System.in);
        System.out.println("Where would you like to place your checker?: ");
        int choice_int=0;
-       while(succesfullPick==true)
+       while(succesfullPick==false)
        {
            for(int i =0;i<destinations.size();i++)
            {
@@ -441,13 +513,14 @@ public class Board
            if((choice_int>=0)&&(choice_int<destinations.size()))
            {
                moveChecker(pickedChecker, destinations.get(choice_int), playerMoving);
-               succesfullPick=false;
+               succesfullPick=true;
            }
            else
            {
-
+               System.out.println("Wrong input, try again!");
            }
        }
+       return destinations.get(choice_int);
 
    }
 
