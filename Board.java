@@ -398,14 +398,14 @@ public class Board
     }
 
     private void moveChecker(int fromIndex, int toIndex, int playerMoving){
-        Checker topChecker = returnTop(fromIndex);
-        Checker newChecker = new Checker(topChecker.getColor_str(), toIndex, topChecker.getPosition_int() + 1);
+        Checker topCheckerFrom = returnTop(fromIndex); // Checker we want to move
+        Checker topCheckerTo = returnTop(toIndex); // Checker on which we will place the current one
+
+        // Place the checker we want to move on top of the highest one at the destination
+        Board_Checker2darr[toIndex][topCheckerTo.getPosition_int()+1] = Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()];
 
         // Remove the checker from the current position
-        Board_Checker2darr[fromIndex][topChecker.getPosition_int()] = null;
-
-        // Place the checker in the new position
-        Board_Checker2darr[toIndex][newChecker.getPosition_int()] = newChecker;
+        Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()] = null;
 
         // Print the updated board
         if (playerMoving == 1) {
@@ -415,26 +415,40 @@ public class Board
         }
     }
 
-   public void makeMove(int pickedChecker ,List<Integer> destinations, int playerMoving) {
-       for (int i = 0; i < destinations.size(); i++) {
-           System.out.println("Out of the list above where would you like to place your checker?: ");
-           Scanner scanner = new Scanner(System.in);
-           int choice = scanner.nextInt();
+   public void makeMove(int pickedChecker ,List<Integer> destinations, int playerMoving)
+   {
+       boolean succesfullPick=true;
 
-           if (playerMoving == 2) {
-               if (choice != (24 - destinations.get(i))) {
-                   System.out.println("Invalid destination"); //Can create an exception class for this later
-               } else {
-                   moveChecker(pickedChecker, choice, playerMoving);
+       Scanner scanner = new Scanner(System.in);
+       System.out.println("Where would you like to place your checker?: ");
+       int choice_int=0;
+       while(succesfullPick==true)
+       {
+           for(int i =0;i<destinations.size();i++)
+           {
+               if(playerMoving==1)
+               {
+                   System.out.println("Enter "+(i+1)+" to move Checker to position "+(destinations.get(i)+1));
                }
-           } else if (playerMoving == 1) {
-               if (choice != (destinations.get(i))) {
-                   System.out.println("Invalid destination"); //Can create an exception class for this later
-               } else {
-                   moveChecker(pickedChecker, choice, playerMoving);
+               if(playerMoving==2)
+               {
+                   System.out.println("Enter "+(i+1)+" to move Checker to position "+(24-(destinations.get(i))));
                }
+
+           }
+           String choice = scanner.nextLine();
+           choice_int =Integer.parseInt(choice)-1; // remove offset from prompt
+           if((choice_int>=0)&&(choice_int<destinations.size()))
+           {
+               moveChecker(pickedChecker, destinations.get(choice_int), playerMoving);
+               succesfullPick=false;
+           }
+           else
+           {
+
            }
        }
+
    }
 
 }

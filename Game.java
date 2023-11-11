@@ -83,31 +83,40 @@ class Game {
     public int promptUserPick(List<Integer> movableCheckers,int playerMoving)
     {
         Scanner scanner = new Scanner(System.in);
+        boolean succesfullPick=true;
         System.out.println();
-        for(int i =0;i<movableCheckers.size();i++)
+        int choice_int=0;
+        while(succesfullPick==true)
         {
-            if(playerMoving==1)
+            for(int i =0;i<movableCheckers.size();i++)
             {
-                System.out.println("Enter "+(i+1)+" to move Checker at position "+(movableCheckers.get(i)+1));
+                if(playerMoving==1)
+                {
+                    System.out.println("Enter "+(i+1)+" to move Checker at position "+(movableCheckers.get(i)+1));
+                }
+                if(playerMoving==2)
+                {
+                    System.out.println("Enter "+(i+1)+" to move Checker at position "+(24-(movableCheckers.get(i))));
+                }
+
             }
-            if(playerMoving==2)
+            System.out.println();
+            String choice = scanner.nextLine();
+
+            choice_int =Integer.parseInt(choice)-1; // remove offset from prompt
+            if((choice_int>=0)&&(choice_int<movableCheckers.size()))
             {
-                System.out.println("Enter "+(i+1)+" to move Checker at position "+(24-(movableCheckers.get(i))));
+               succesfullPick=false;
+
             }
-
-        }
-        System.out.println();
-        String choice = scanner.nextLine();
-        int choice_int =Integer.parseInt(choice)-1; // remove offset from prompt
-        if((choice_int>=0)&&(choice_int<movableCheckers.size()))
-        {
-            return movableCheckers.get(choice_int);
-        }
-        else
-        {
-            return -1;
+            else
+            {
+                System.out.println("Wrong input, try again!");
+                succesfullPick=true;
+            }
         }
 
+        return movableCheckers.get(choice_int);
     }
 }
 
