@@ -15,20 +15,20 @@ public class main
     {
       int player =2;
 
-      //Board myBoard=new Board(8);
-      //myBoard.createBoard();
-      //myBoard.printBoard(player);
+      Board myBoard=new Board(8);
+      myBoard.createBoard();
 
-      //Scanner scanner = new Scanner(System.in);
+
+      Scanner scanner = new Scanner(System.in);
 
 
       // START TEST CODE
       Game backgammonGame = new Game("player1", "player2"); //new game with fixed playernames for easy debugging
       backgammonGame.playGame();
-
-      //List<Integer> freeCheckers = new ArrayList<>();
-      /*List<Integer> destination = new ArrayList<>();
-      int[] dice={4,4,4,4}; //sample dice to test calcmoves
+      /*
+      List<Integer> freeCheckers = new ArrayList<>();
+      List<Integer> destination = new ArrayList<>();
+      int[] dice={4,4}; //sample dice to test calcmoves
       freeCheckers =myBoard.findFreeCheckers(player,dice); // freeCheckers contains all free checkerindices for player2 now (0 based)
 
       for(int i = 0; i< freeCheckers.size(); i++)
@@ -37,8 +37,8 @@ public class main
       }
 
         myBoard.highlightCheckersandPrint(freeCheckers,player); // highlights checkers
-        myBoard.printBoard(player);
-        int pickedChecker=backgammonGame.promptUserPick(freeCheckers,player); // ask user to pick checker
+
+        int pickedChecker=backgammonGame.promptUserPickChecker(freeCheckers,player); // ask user to pick checker
 
         System.out.println("picked array index. "+pickedChecker);
         System.out.println("picked checkernumber for player2: "+(24-pickedChecker));
@@ -51,9 +51,16 @@ public class main
 
         }
       //Damis Edits
-      int destinationindex=myBoard.makeMove(pickedChecker,destination,player);
-      myBoard.highlightOneheckerandPrint(destinationindex,player);
+      dice=myBoard.promptUserPickDestination(pickedChecker,destination,player,dice);
+      destination.clear();;
+      destination=myBoard.calculateMoves(pickedChecker,dice,player);
+      for(int i=0;i<destination.size();i++)
+      {
+
+        System.out.println("This Checker can move to: " + (destination.get(i))); //maybe put this in a variable
+      }
 */
+
     }
       //END TEST CODE
 

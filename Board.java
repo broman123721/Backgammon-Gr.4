@@ -35,7 +35,7 @@ public class Board
 
         }
     }
-    public void createBoard()
+    public void createBoard() //Inserts Checkers intheir initial positions
     {
         fillPoints(1,2,ANSI_RED);
         fillPoints(6,5,ANSI_WHITE);
@@ -207,8 +207,10 @@ public class Board
         }
         return ret;
     }
+
     public boolean isSpaceAvailable(int playerMoving,int index_destination)
-    {
+    {// takes a destination index and player moving and checks if the current player can move a checker there
+
         Checker  help=returnTop(index_destination);
         boolean ret=false;
 
@@ -241,7 +243,7 @@ public class Board
 
 //
     }
-    public List<Integer> findFreeCheckers(int playerMoving,int[] dice)
+    public List<Integer> findFreeCheckers(int playerMoving,int[] dice) // returns a list of integer indices of movable checkers for current player moving
     {
         List<Integer> ret = new ArrayList<>();
         List<Integer> destinations=new ArrayList<>();
@@ -290,7 +292,7 @@ public class Board
     return ret;
 
     }
-    void highlightOneheckerandPrint(int index,int playerMoving)
+    void highlightOneheckerandPrint(int index,int playerMoving) // Highlights the top Checker of  a chosen index green for current player
     {
         Checker help=returnTop(index);
         int position=help.getPosition_int();
@@ -306,7 +308,7 @@ public class Board
         }
 
     }
-    void highlightCheckersandPrint(List<Integer> movablecheckers,int playerMoving)
+    void highlightCheckersandPrint(List<Integer> movablecheckers,int playerMoving) // highlights all movable checkers green for current player
     {
         Checker help=new Checker("default",-100,-100);
         String color;
@@ -342,133 +344,78 @@ public class Board
             }
         }
     }
-    List<Integer> calculateMoves(int pickedChecker, int[] dice,int playerMoving) // calculates all the places that checker can move to
+    List<Integer> calculateMoves(int pickedChecker, int[] dice,int playerMoving) // calculates all the places that checker can move to and returns destination indices list
     {
-        int destination_p1=0;
-        int destination_p2=0;
+
+        int[] dest_int=new int[3]; // all possible destinations [0] destination of die 0, [1] destination of die 1, [2] destination of die 1+2
+        int destination_index =0;
+
         List<Integer> destinations = new ArrayList<>(4);
-        //TODO BEARING OFF if all in last quarter, move could be to destination -1 and in makeMove() have a if(destination==-1) --> bear off
+        //TODO BEARING OFF if all in last quarter, move could be to destination -1 and in promptUserPickDestination() have a if(destination==-1) --> bear off
         boolean bearingoffcondition=false;
+
         if(bearingoffcondition)
         {
 
         }
-        else //normal moving - adaption from canMove() function
+        else //normal moving
         {
-            // all possible dice combinations are calculated and evaluated
-            int combinedpoints; //saves the current dice combination
-            int destination_index =0;
-
-            if(dice[0]==dice[1]) // combinations dice[0], [0]+[1], [0]+[1]+[2], [0]+[1}+[2]+[3]
+            if(playerMoving==1) //moves down the board and array -> destination is pickedchecker - movAmount
             {
-                for(int i=0;i<=3;i++) // runs through all move combinations possible depending on dice
+                dest_int[0]=pickedChecker-dice[0];
+                dest_int[1]=pickedChecker-dice[1];
+                dest_int[2]=pickedChecker-(dice[0]+dice[1]);
+
+                for(int i=0;i<=2;i++) // run trough all combinatio [dice1], [dice2], [dice1+dice2]
                 {
-                    destination_p1=pickedChecker;
-                    destination_p2=pickedChecker;
-                    combinedpoints=0; // holds the amount of points to move with current move
-
-                    for(int u=0;u<=i;u++)
+                    if (dest_int[i] >= 0) // valid destination
                     {
-                        combinedpoints=combinedpoints+dice[u];
-                    }
-                    for(int m=0 ;m<combinedpoints;m++)
-                    {
-                        destination_p1=destination_p1-1;
-                        destination_p2=destination_p2+1;
-                    }
-                    if(destination_p1==-1)
-                    {
-                        destination_p1=0;
-                    }
-                    if(destination_p2==24)
-                    {
-                        destination_p1=23;
-                    }
-                    if(playerMoving==1) // player 1 moves from 23 to 0 hence destination_index - combinedpoints
-                    {
-                        if (destination_p1 >= 0) //check for moves that would go out the playingfield
+                        //  (combination of both) && (is free)&& (both dest 1 and dest 2 are free) && (destinaiton != pickedchecker)
+                        if((i==2)&&(isSpaceAvailable(playerMoving, dest_int[i]))&&(destinations.size()==2)&&(dest_int[i]!=pickedChecker)) // for combinationn of both dice
                         {
-                            if (isSpaceAvailable(playerMoving, destination_p1))// checks if checker could move here
-                            {
-                                destinations.add(destination_index, destination_p1);
-                                destination_index++;
-                            }
+                            destinations.add(destination_index, dest_int[i]); // save valid destination to return list
+                            destination_index++;
                         }
-                    }
-                    if(playerMoving==2)
-                    {
-                        if(destination_p2<=23)
+                        else if((i<2)&&(isSpaceAvailable(playerMoving, dest_int[i]))&&(dest_int[i]!=pickedChecker)) // for individual dice
                         {
-                            if(isSpaceAvailable(playerMoving,destination_p2))
-                            {
-                                destinations.add(destination_index, destination_p2);
-                                destination_index++;
-                            }
+                            destinations.add(destination_index, dest_int[i]);
+                            destination_index++;
                         }
-
                     }
 
                 }
             }
-            if(dice[0]!=dice[1]) // Combiantions of dice dice[0], dice[1], dice[0]+dice[1]
+            if(playerMoving==2) //moves up the board and array -> destination is pickedchecker + movAmount
             {
-                int []combinations =new int[] {dice[0],dice[1],dice[0]+dice[1]};
+                dest_int[0]=pickedChecker+dice[0];
+                dest_int[1]=pickedChecker+dice[1];
+                dest_int[2]=pickedChecker+dice[0]+dice[1];
+
                 for(int i=0;i<=2;i++)
                 {
-                    destination_p1=pickedChecker;
-                    destination_p2=pickedChecker;
-
-                    for(int m=0 ;m<combinations[i];m++)
+                    if (dest_int[i] <= 23) // valid destination
                     {
-                        destination_p1=destination_p1-1;
-                        destination_p2=destination_p2+1;
-                    }
-                    if(destination_p1==-1)
-                    {
-                        destination_p1=0;
-                    }
-                    if(destination_p2==24)
-                    {
-                        destination_p1=23;
-                    }
-
-                    if(playerMoving==1) // player 1 moves from 23 to 0 hence destination_index - combinedpoints
-                    {
-                        if (destination_p1 >= 0) //check for moves that would go out the playingfield
+                        if((i==2)&&(isSpaceAvailable(playerMoving, dest_int[i]))&&(destinations.size()==2)&&(dest_int[i]!=pickedChecker)) //  (combination of both) && (is free)&& (both dest 1 and dest 2 are free)
                         {
-                            if (isSpaceAvailable(playerMoving, destination_p1))// checks if checker could move here
-                            {
-                                destinations.add(destination_index, destination_p1);
-                                destination_index++;
-                            }
+                            destinations.add(destination_index, dest_int[i]);
+                            destination_index++;
                         }
-                    }
-                    if(playerMoving==2)
-                    {
-                        if(destination_p2<=23)
+                        else if((i<2)&&(isSpaceAvailable(playerMoving, dest_int[i]))&&(dest_int[i]!=pickedChecker))
                         {
-                            if(isSpaceAvailable(playerMoving,destination_p2))
-                            {
-                                destinations.add(destination_index, destination_p2);
-                                destination_index++;
-                            }
+                            destinations.add(destination_index, dest_int[i]); // save valid destination to return list
+                            destination_index++;
                         }
-
                     }
 
                 }
-
             }
 
-
-
-
         }
-
         return destinations;
     }
 
-    private void moveChecker(int fromIndex, int toIndex, int playerMoving){
+    private void moveChecker(int fromIndex, int toIndex, int playerMoving) // executes actual moving of checker
+    {
         Checker topCheckerFrom = returnTop(fromIndex); // Checker we want to move
         Checker topCheckerTo = returnTop(toIndex); // Checker on which we will place the current one
 
@@ -487,16 +434,18 @@ public class Board
 
     }
 
-   public int makeMove(int pickedChecker ,List<Integer> destinations, int playerMoving)
+   public int[] promptUserPickDestination(int pickedChecker , List<Integer> destinations, int playerMoving, int[] dice) // ask user to pick the destination of Checker
    {
+       int[] ret =new int[3];
+       ret=dice;
        boolean succesfullPick=false;
-
+       boolean resetflag =false;
        Scanner scanner = new Scanner(System.in);
        System.out.println("Where would you like to place your checker?: ");
        int choice_int=0;
        while(succesfullPick==false)
        {
-           for(int i =0;i<destinations.size();i++)
+           for(int i =0;i<destinations.size();i++) //print all possibilities
            {
                if(playerMoving==1)
                {
@@ -508,11 +457,13 @@ public class Board
                }
 
            }
-           String choice = scanner.nextLine();
-           choice_int =Integer.parseInt(choice)-1; // remove offset from prompt
-           if((choice_int>=0)&&(choice_int<destinations.size()))
+           String choice = scanner.nextLine(); // get user input
+           choice_int =Integer.parseInt(choice)-1; // remove offset from prompt to fit array index
+
+           if((choice_int>=0)&&(choice_int<destinations.size())) // if move is legal make it and highlight the moved checker
            {
                moveChecker(pickedChecker, destinations.get(choice_int), playerMoving);
+               highlightOneheckerandPrint(destinations.get(choice_int),playerMoving);
                succesfullPick=true;
            }
            else
@@ -520,8 +471,92 @@ public class Board
                System.out.println("Wrong input, try again!");
            }
        }
-       return destinations.get(choice_int);
+
+       //Find the move that was made and set the according dice to 0, This is necessary as next loop iteration of playGame() will then calculate possible moves
+       //with updated dice
+       if(playerMoving==1)
+       {
+           int movedistance = pickedChecker - destinations.get(choice_int);
+           if((movedistance==dice[0])&&(resetflag==false)) // resetflag prevents both dice getting wiped when they are the same on double round
+           {
+               dice[0]=0;
+               resetflag=true;
+           }
+           if((movedistance==dice[1])&&(resetflag==false))
+           {
+               dice[1]=0;
+               resetflag=true;
+           }
+           if((movedistance == (dice[0] + dice[1])) && (resetflag == false))
+           {
+               dice[0]=0;
+               dice[1]=0;
+           }
+       }
+       if(playerMoving==2)
+       {
+
+           int movedistance =destinations.get(choice_int) - pickedChecker;
+           if((movedistance==dice[0])&&(resetflag==false))
+           {
+               dice[0]=0;
+               resetflag=true;
+           }
+           if((movedistance==dice[1])&&(resetflag==false))
+           {
+               dice[1]=0;
+               resetflag=true;
+           }
+           if((movedistance == (dice[0] + dice[1])) && (resetflag == false))
+           {
+               dice[0]=0;
+               dice[1]=0;
+               resetflag=true;
+           }
+       }
+
+
+       return ret;
 
    }
+    public int promptUserPickChecker(List<Integer> movableCheckers, int playerMoving) // asks user to pick a checker
+    {
+        Scanner scanner = new Scanner(System.in);
+        boolean succesfullPick=false;
+        System.out.println();
+        int choice_int=0;
+        while(succesfullPick==false)
+        {
+            for(int i =0;i<movableCheckers.size();i++)
+            {
+                if(playerMoving==1)
+                {
+                    System.out.println("Enter "+(i+1)+" to move Checker at position "+(movableCheckers.get(i)+1));
+                }
+                if(playerMoving==2)
+                {
+                    System.out.println("Enter "+(i+1)+" to move Checker at position "+(24-(movableCheckers.get(i))));
+                }
+
+            }
+            System.out.println();
+            String choice = scanner.nextLine();
+
+            choice_int =Integer.parseInt(choice)-1; // remove offset from prompt
+            if((choice_int>=0)&&(choice_int<movableCheckers.size()))
+            {
+                succesfullPick=true;
+
+            }
+            else
+            {
+                System.out.println("Wrong input, try again!");
+                succesfullPick=false;
+            }
+        }
+
+        return movableCheckers.get(choice_int);
+    }
 
 }
+

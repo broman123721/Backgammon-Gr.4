@@ -1,4 +1,3 @@
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -16,7 +15,7 @@ class Game {
     private boolean QuitOrRoll() {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Do you want to roll the dice? (yes/no): ");
+        System.out.print("Do you want to play? (yes/no): ");
         String choice = scanner.nextLine().toLowerCase();
 
         if ("yes".equals(choice)) {
@@ -29,21 +28,26 @@ class Game {
     }
 
     public void playGame() {
-        Scanner scanner = new Scanner(System.in);
+
         int currentplayer=-1;
         boolean dicedraw=true;
+        int isdouble_int =0;
+        int dice_copy=0;
+        boolean isdouble_bool=false;
+
+
+        int round=0;
         int[] diceValues=new int[4];
 
         System.out.println("Let's roll the dice to determine the starting player...");
         while(dicedraw==true)
         {
             diceValues = Die.rollDice();
-            System.out.println("DICE Player 1:"+"["+diceValues[0]+"]"+"["+diceValues[1]+"]"+"="+(diceValues[0]+diceValues[1]));
-            int total1 = diceValues[0] + diceValues[1];
+            System.out.println("DICE "+player1+":"+"["+diceValues[0]+"]");
+            int total1 = diceValues[0];
 
-            diceValues = Die.rollDice();
-            System.out.println("DICE Player 2:"+"["+diceValues[0]+"]"+"["+diceValues[1]+"]"+"="+(diceValues[0]+diceValues[1]));
-            int total2 = diceValues[0] + diceValues[1];
+            System.out.println("DICE "+player2+":"+"["+diceValues[1]+"]");
+            int total2 = diceValues[1];
 
             if (total1 > total2)
             {
@@ -69,11 +73,14 @@ class Game {
         myBoard.printBoard(currentplayer);
         List<Integer> freeCheckers = new ArrayList<>();
         List<Integer> destination = new ArrayList<>();
+        boolean movesPossible=true;
+
         int pickedChecker = -1;
-        int destinationindex = -1;
+
+
         while (true)
         {
-            if (!QuitOrRoll())
+            if (!QuitOrRoll()) // either roll or quit game
             {
                 Scanner QuitOrContinue = new Scanner(System.in);
                 System.out.println("Would you like to quit the game? (yes/no):");
@@ -87,9 +94,6 @@ class Game {
             }
             else
             {
-                freeCheckers.clear();
-                destination.clear();
-
                 if(currentplayer==1)
                 {
                     System.out.println(player1+"'s Move!");
@@ -98,74 +102,114 @@ class Game {
                 {
                     System.out.println(player2+"'s Move!");
                 }
+                if(round==0) // Use dice thrown in inital round for first moves
+                {
+                    System.out.println("Start with these Dice:");
+                    round=round+1;
+                }
+                else
+                {
+                    System.out.println("Rolling the dice...");
 
-                System.out.println("Rolling the dice...");
-                diceValues = Die.rollDice();
+                    // Test double feature
+                    //diceValues[0]=4; //
+                    //diceValues[1]=4;
+                    diceValues=Die.rollDice();
+
+
+                    if(diceValues[0] == diceValues[1]) // double was thrown
+                    {
+                        System.out.println("You have a double!");
+                        System.out.println("Play your two sets of dice sequentially");
+                        isdouble_int =0; //while loop will be ran twice
+                        isdouble_bool=true; // needed so on second iteration of loop the dice can be rewritten to the original throw
+                        dice_copy=diceValues[0]; // saves the dice double that was thrown
+                    }
+                    else
+                    {
+                        isdouble_int =1; // regular round only goes through loop once
+                    }
+                }
+
                 int total = 0;
 
-
-                if(diceValues[0] == diceValues[1]){
-                    System.out.println("You rolled a double!");
-                    System.out.println("Die 1: " + diceValues[0]);
-                    System.out.println("Die 2: " + diceValues[1]);
-                    System.out.println("Die 3: " + diceValues[2]);
-                    System.out.println("Die 4: " + diceValues[3]);
-                }
-                else{
-                    System.out.println("Die 1: " + diceValues[0]);
-                    System.out.println("Die 2: " + diceValues[1]);
-                }
-
-                total = diceValues[0] + diceValues[1] + diceValues[2] +diceValues[3];
-                System.out.println("Total: " + total);
-                System.out.println();
-
-                freeCheckers =myBoard.findFreeCheckers(currentplayer,diceValues);
-                for(int i = 0; i< freeCheckers.size(); i++)
+                while(isdouble_int <2) // when a double is rolled the loop is ran twice
                 {
-                    if (currentplayer==1)
+                    if((isdouble_bool==true)&&(isdouble_int==1)) //reset dice for second round of moves in case of double
                     {
-                        System.out.println("Movable Checker at "+ (freeCheckers.get(i)+1));
-                    }
-                    if (currentplayer==2)
-                    {
-                        System.out.println("Movable Checker at "+ (24-freeCheckers.get(i)));
+                        movesPossible=true;
+                        diceValues[0]=dice_copy;
+                        diceValues[1]=dice_copy;
+                        System.out.println("Second Round of Your Double");
                     }
 
+                    while(movesPossible==true)// player has moves left to make
+                    {
+                        freeCheckers.clear(); // clear calculated freeCheckers and destinations from last round
+                        destination.clear();
+
+                        for(int i=0;i<=1;i++) // Print Dice that are not 0 and total value
+                        {
+                            if(diceValues[i]!=0)
+                            {
+                                System.out.println("Die "+(i+1)+": " + diceValues[i]);
+                            }
+                        }
+                        total = diceValues[0] + diceValues[1];
+                        System.out.println();
+                        System.out.println("Total: " + total);
+                        System.out.println();
+
+
+                        freeCheckers =myBoard.findFreeCheckers(currentplayer,diceValues); // find free checkers
+                        if(freeCheckers.size()==0)
+                        {
+                            System.out.println("No Moves Possible!"); // no moves possible with this throw of dice
+                            break;
+                        }
+                        myBoard.highlightCheckersandPrint(freeCheckers,currentplayer); // highlight free checkers
+                        pickedChecker=this.promptUserPickChecker(freeCheckers,currentplayer); //ask user to pick a checker to move
+                        destination=myBoard.calculateMoves(pickedChecker,diceValues,currentplayer); // calculatethe possible destinations for that checker
+
+                        for(int i=0;i<destination.size();i++) //show possible destinations of that checker to user
+                        {
+                            if(currentplayer==1)
+                            {
+                                System.out.println("This Checker can move to: " + (destination.get(i)+1));
+                            }
+                            if(currentplayer==2)
+                            {
+                                System.out.println("This Checker can move to: " + (24-destination.get(i)));
+                            }
+                        }
+                        diceValues=myBoard.promptUserPickDestination(pickedChecker,destination,currentplayer,diceValues); //ask user to pick destination and calculate new dice values
+
+
+                        freeCheckers =myBoard.findFreeCheckers(currentplayer,diceValues); //check if there are movable checkers left after the move with current dice combination
+                        if(freeCheckers.isEmpty()) //  if no moves possible -> End turn else start over
+                        {
+                            System.out.println("No Moves Possible!");
+                            movesPossible=false;
+                        }
+                    }
+                    isdouble_int = isdouble_int +1; //increase double loop counter
                 }
-                myBoard.highlightCheckersandPrint(freeCheckers,currentplayer);
-                pickedChecker=this.promptUserPick(freeCheckers,currentplayer);
-                destination=myBoard.calculateMoves(pickedChecker,diceValues,currentplayer);
-
-                for(int i=0;i<destination.size();i++)
-                {
-                    if(currentplayer==1)
-                    {
-                        System.out.println("This Checker can move to: " + (destination.get(i)+1)); //maybe put this in a variable
-                    }
-                    if(currentplayer==2)
-                    {
-                        System.out.println("This Checker can move to: " + (24-destination.get(i))); //maybe put this in a variable
-                    }
-                }
-                destinationindex=myBoard.makeMove(pickedChecker,destination,currentplayer);
-
-
-
-
+                //At the end of the turn swap player and reset while loop variable
                 if(currentplayer==1)
                 {
                     currentplayer=2;
+                    movesPossible=true;
 
                 }
                 else if(currentplayer==2)
                 {
                     currentplayer=1;
+                    movesPossible=true;
                 }
             }
         }
     }
-    public int promptUserPick(List<Integer> movableCheckers,int playerMoving)
+    public int promptUserPickChecker(List<Integer> movableCheckers, int playerMoving) // asks user to pick a checker
     {
         Scanner scanner = new Scanner(System.in);
         boolean succesfullPick=false;
