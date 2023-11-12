@@ -13,39 +13,55 @@ public class main
 {
     public static void main(String[] args)
     {
+      int player =2;
+
       Board myBoard=new Board(8);
       myBoard.createBoard();
-      myBoard.printBoard(1);
+
 
       Scanner scanner = new Scanner(System.in);
 
 
       // START TEST CODE
       Game backgammonGame = new Game("player1", "player2"); //new game with fixed playernames for easy debugging
-      //backgammonGame.playGame();
-      Checker a;
-      List<Integer> arr = new ArrayList<>();
+      backgammonGame.playGame();
+      /*
+      List<Integer> freeCheckers = new ArrayList<>();
       List<Integer> destination = new ArrayList<>();
-      int[] dice={4,4,4,4}; //sample dice to test calcmoves
-      arr=myBoard.findFreeCheckers(2,dice); // arr contains all free checkerindices for player2 now (0 based)
+      int[] dice={4,4}; //sample dice to test calcmoves
+      freeCheckers =myBoard.findFreeCheckers(player,dice); // freeCheckers contains all free checkerindices for player2 now (0 based)
 
-      for(int i=0;i<arr.size();i++)
+      for(int i = 0; i< freeCheckers.size(); i++)
       {
-          System.out.println("Free Checker at "+arr.get(i));
+          System.out.println("Free Checker at "+ freeCheckers.get(i));
       }
 
-        myBoard.highlightCheckersandPrint(arr); // highlights checkers
+        myBoard.highlightCheckersandPrint(freeCheckers,player); // highlights checkers
 
-        int pickedChecker=backgammonGame.promptUserPick(arr,2); // ask user to pick checker
+        int pickedChecker=backgammonGame.promptUserPickChecker(freeCheckers,player); // ask user to pick checker
+
         System.out.println("picked array index. "+pickedChecker);
         System.out.println("picked checkernumber for player2: "+(24-pickedChecker));
-        destination=myBoard.calculateMoves(pickedChecker,dice,2);
+        destination=myBoard.calculateMoves(pickedChecker,dice,player);
 
-        for(int i=0;i<destination.size();i++)
-        {
+        for(int i=0;i<destination.size();i++) {
 
-            System.out.println("This Checker can move to: "+(24-destination.get(i)));
+          System.out.println("This Checker can move to: " + (destination.get(i))); //maybe put this in a variable
+
+
         }
+      //Damis Edits
+      dice=myBoard.promptUserPickDestination(pickedChecker,destination,player,dice);
+      destination.clear();;
+      destination=myBoard.calculateMoves(pickedChecker,dice,player);
+      for(int i=0;i<destination.size();i++)
+      {
+
+        System.out.println("This Checker can move to: " + (destination.get(i))); //maybe put this in a variable
+      }
+*/
+
+    }
       //END TEST CODE
 
       // Comment for development
@@ -61,8 +77,8 @@ public class main
       Game backgammonGame = new Game(player1, player2);
         backgammonGame.playGame();*/
 
-    }
-
-
-
 }
+
+
+
+
