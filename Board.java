@@ -401,7 +401,7 @@ public class Board
                         {
                             if(isSpaceAvailable(playerMoving,pickedChecker+combinedpoints))
                             {
-                                destinations.add(index,pickedChecker+combinedpoints);
+                                destinations.add(index,pickedChecker+combinedpoints-1);
                                 index++;
                                 break;
                             }
@@ -420,13 +420,14 @@ public class Board
 
     private void moveChecker(int fromIndex, int toIndex, int playerMoving){
         Checker topChecker = returnTop(fromIndex);
-        Checker newChecker = new Checker(topChecker.getColor_str(), toIndex, topChecker.getPosition_int() + 1);
+        Checker destinationTopChecker = returnTop(toIndex);
+        Checker newChecker = new Checker(topChecker.getColor_str(), toIndex, destinationTopChecker.getPosition_int() + 1);
 
         // Remove the checker from the current position
         Board_Checker2darr[fromIndex][topChecker.getPosition_int()] = null;
 
         // Place the checker in the new position
-        Board_Checker2darr[toIndex][newChecker.getPosition_int()] = newChecker;
+        Board_Checker2darr[toIndex][destinationTopChecker.getPosition_int()+1] = newChecker;
 
         // Print the updated board
         if (playerMoving == 1) {
@@ -437,25 +438,28 @@ public class Board
     }
 
    public void makeMove(int pickedChecker ,List<Integer> destinations, int playerMoving) {
-       for (int i = 0; i < destinations.size(); i++) {
            System.out.println("Out of the list above where would you like to place your checker?: ");
            Scanner scanner = new Scanner(System.in);
            int choice = scanner.nextInt();
 
+           System.out.println("Destinations" + destinations);
+
+       for(int i=0;i<destinations.size()+1;i++) {
            if (playerMoving == 2) {
-               if (choice != (24 - destinations.get(i))) {
+               if (choice == 24 - destinations.get(i)) {
                    System.out.println("Invalid destination"); //Can create an exception class for this later
                } else {
                    moveChecker(pickedChecker, choice, playerMoving);
                }
            } else if (playerMoving == 1) {
-               if (choice != (destinations.get(i))) {
+               if (choice == (destinations.get(i))) {
                    System.out.println("Invalid destination"); //Can create an exception class for this later
                } else {
                    moveChecker(pickedChecker, choice, playerMoving);
                }
            }
        }
+
    }
 
 }

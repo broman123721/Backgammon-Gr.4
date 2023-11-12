@@ -40,7 +40,7 @@ public class main
         System.out.println("picked array index. "+pickedChecker);
         System.out.println("picked checkernumber for player2: "+(24-pickedChecker));
         destination=myBoard.calculateMoves(pickedChecker,dice,2);
-        int pickch = 24-pickedChecker; //for player 2 maybe we need to implement this to automatically be done in our function
+
 
         for(int i=0;i<destination.size();i++) {
 
@@ -49,7 +49,7 @@ public class main
 
         }
       //Damis Edits
-      myBoard.makeMove(pickch, destination,2);
+      myBoard.makeMove(destination.get(pickedChecker), destination,2);
     }
       //END TEST CODE
 
