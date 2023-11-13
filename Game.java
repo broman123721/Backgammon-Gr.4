@@ -14,17 +14,18 @@ class Game {
 
     private boolean QuitOrRoll() {
         Scanner scanner = new Scanner(System.in);
+        boolean ret=false;
 
         System.out.print("Do you want to play? (yes/no): ");
         String choice = scanner.nextLine().toLowerCase();
 
         if ("yes".equals(choice)) {
-            return true;
+            ret= false;
         } else if ("no".equals(choice)) {
-            return false;
+            ret= true;
         } //Maybe we should make an addition here or to the code later in case an invalid entry is put in?
           //Exception class might be better we can discuss this on Thursday.
-        return false;
+       return ret;
     }
 
     public void playGame() {
@@ -91,22 +92,18 @@ class Game {
         int pipp1=0;
         int pipp2=0;
         int pickedChecker = -1;
-
+        boolean endGame=false;
 
         while (true)
         {
-            if (!QuitOrRoll()) // either roll or quit game
+            endGame=QuitOrRoll();
+
+            if (endGame==true) // either roll or quit game
             {
-                Scanner QuitOrContinue = new Scanner(System.in);
-                System.out.println("Would you like to quit the game? (yes/no):");
-                String choice = QuitOrContinue.nextLine().toLowerCase();
-
-                if ("yes".equals(choice)) {
-                    System.out.println("Thanks for playing! Goodbye!! :)");
-                    break;
-                } else if ("no".equals(choice)) continue;
-
+               System.out.println("Thanks for playing! Goodbye!! :)");
+               break;
             }
+
             else
             {
                 if(currentplayer==1)
@@ -177,7 +174,7 @@ class Game {
                         System.out.println("Total: " + total);
                         System.out.println();
 
-                        if(myBoard.hasCheckerOnBeam(currentplayer))
+                        if(myBoard.hasCheckerOnBeam(currentplayer)) // CheckeronBeam
                         {
                             System.out.println("You have a checker on the Beam");
                             myBoard.printBoard(currentplayer);
@@ -193,15 +190,20 @@ class Game {
 
                         else if(movesPossible==true) //free moves
                         {
-                            freeCheckers =myBoard.findFreeCheckers(currentplayer,diceValues); // find free checkers
+                            freeCheckers = myBoard.findFreeCheckers(currentplayer,diceValues); // find free checkers
+                            if(myBoard.canBearOff(currentplayer))
+                            {
+                                System.out.println("You can bear off!");
+                            }
                             if(freeCheckers.size()==0)
                             {
                                 System.out.println("No Moves Possible!"); // no moves possible with this throw of dice
+                                movesPossible=false;
                                 break;
                             }
                             myBoard.highlightCheckersandPrint(freeCheckers,currentplayer); // highlight free checkers
                             pickedChecker=this.promptUserPickChecker(freeCheckers,currentplayer); //ask user to pick a checker to move
-                            destination=myBoard.calculateMoves(pickedChecker,diceValues,currentplayer); // calculatethe possible destinations for that checker
+                            destination=myBoard.calculateMoves(pickedChecker,diceValues,currentplayer); // calculate the possible destinations for that checker
 
                             for(int i=0;i<destination.size();i++) //show possible destinations of that checker to user
                             {
@@ -222,6 +224,13 @@ class Game {
                             {
                                 System.out.println("No Moves Possible!");
                                 movesPossible=false;
+                            }
+                            if(myBoard.checkForWin(currentplayer)==true) // End of game
+                            {
+                                System.out.println("Player: "+currentplayer+" won. End of Game!");
+                                isdouble_int=2;
+                                movesPossible=false;
+                                endGame=true;
                             }
                         }
 

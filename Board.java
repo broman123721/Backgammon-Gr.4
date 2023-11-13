@@ -1,3 +1,4 @@
+import javax.swing.plaf.IconUIResource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -56,6 +57,7 @@ public class Board
     }
     public void createBoard() //Inserts Checkers intheir initial positions
     {
+
         fillPoints(1,2,ANSI_RED);
         fillPoints(6,5,ANSI_WHITE);
         fillPoints(8,3,ANSI_WHITE);
@@ -64,6 +66,19 @@ public class Board
         fillPoints(17,3,ANSI_RED);
         fillPoints(19,5,ANSI_RED);
         fillPoints(24,2,ANSI_WHITE);
+
+         //for testing Bearing off
+         /*
+        fillPoints(24,3,ANSI_RED);
+        fillPoints(23,5,ANSI_RED);
+        fillPoints(22,2,ANSI_RED);
+        fillPoints(21,5,ANSI_RED);
+
+        fillPoints(1,5,ANSI_WHITE);
+        fillPoints(2,3,ANSI_WHITE);
+        fillPoints(3,5,ANSI_WHITE);
+        fillPoints(4,2,ANSI_WHITE);*/
+
     }
     public int getPipCount(int playerMoving)
     {
@@ -413,13 +428,59 @@ public class Board
         int destination_index =0;
 
         List<Integer> destinations = new ArrayList<>(4);
-        //TODO BEARING OFF if all in last quarter, move could be to destination -1 and in promptUserPickDestination() have a if(destination==-1) --> bear off
-        boolean bearingoffcondition=false;
 
-        if(bearingoffcondition)
+        if(canBearOff(playerMoving))
         {
+            if(playerMoving==1) //moves down the board and array -> destination is pickedchecker - movAmount
+            {
+                dest_int[0]=pickedChecker-dice[0];
+                dest_int[1]=pickedChecker-dice[1];
+                dest_int[2]=pickedChecker-(dice[0]+dice[1]);
+
+                for(int i=0;i<=1;i++) // run trough all combinatio [dice1], [dice2], [dice1+dice2]
+                {
+                    if (dest_int[i] >= -1) // valid destination
+                    {
+                        if(dest_int[i]==-1) {
+                            destinations.add(destination_index, dest_int[i]);
+                            destination_index++;
+                        }
+                        else if((isSpaceAvailable(playerMoving, dest_int[i]))&&(dest_int[i]!=pickedChecker))
+                        {
+                            destinations.add(destination_index, dest_int[i]);
+                            destination_index++;
+                        }
+                    }
+
+                }
+            }
+            if(playerMoving==2) //moves up the board and array -> destination is pickedchecker + movAmount
+            {
+                dest_int[0]=pickedChecker+dice[0];
+                dest_int[1]=pickedChecker+dice[1];
+                dest_int[2]=pickedChecker+dice[0]+dice[1];
+
+                for(int i=0;i<=2;i++)
+                {
+                    if (dest_int[i] <= 24) // valid destination
+                    {
+                        if(dest_int[i]==24)
+                        {
+                            destinations.add(destination_index, dest_int[i]);
+                            destination_index++;
+                        }
+                        else if((isSpaceAvailable(playerMoving, dest_int[i]))&&(dest_int[i]!=pickedChecker))
+                        {
+                            destinations.add(destination_index, dest_int[i]); // save valid destination to return list
+                            destination_index++;
+                        }
+                    }
+
+                }
+            }
 
         }
+
         else //normal moving
         {
             if(playerMoving==1) //moves down the board and array -> destination is pickedchecker - movAmount
@@ -477,8 +538,6 @@ public class Board
     }
     public int[] calculateMovesFromBeam(int playerMoving, int[] dice)
     {
-
-
         boolean nopickpossible=false;
         boolean succesfullPick=false;
         int[]destinations={-1,-1};
@@ -721,8 +780,6 @@ public class Board
                 barPointerRed_int = barPointerRed_int -1; // decrease beam stack counter
             }
         }
-
-
     }
     public boolean hasCheckerOnBeam(int playerMoving)
     {
@@ -765,9 +822,22 @@ public class Board
 
            if((choice_int>=0)&&(choice_int<destinations.size())) // if move is legal make it and highlight the moved checker
            {
-               moveChecker(pickedChecker, destinations.get(choice_int), playerMoving);
-               highlightOneheckerandPrint(destinations.get(choice_int),playerMoving);
-               succesfullPick=true;
+               if((destinations.get(choice_int)==-1)||(destinations.get(choice_int)==24)) // bear off
+               {
+                   Checker help =returnTop(pickedChecker);
+                   int height=help.getPosition_int();
+                   Board_Checker2darr[pickedChecker][height]=null;
+                   succesfullPick=true;
+                   printBoard(playerMoving);
+               }
+               else
+               {
+                   moveChecker(pickedChecker, destinations.get(choice_int), playerMoving);
+                   highlightOneheckerandPrint(destinations.get(choice_int),playerMoving);
+                   succesfullPick=true;
+
+               }
+
            }
            else
            {
@@ -790,10 +860,11 @@ public class Board
                dice[1]=0;
                resetflag=true;
            }
-           if((movedistance == (dice[0] + dice[1])) && (resetflag == false))
+           if(movedistance == (dice[0] + dice[1])&&(resetflag==false))
            {
                dice[0]=0;
                dice[1]=0;
+
            }
        }
        if(playerMoving==2)
@@ -810,17 +881,63 @@ public class Board
                dice[1]=0;
                resetflag=true;
            }
-           if((movedistance == (dice[0] + dice[1])) && (resetflag == false))
+           if(movedistance == (dice[0] + dice[1])&&(resetflag==false))
            {
                dice[0]=0;
                dice[1]=0;
-               resetflag=true;
+
            }
        }
        return ret;
 
    }
-
+    public boolean canBearOff(int playerMoving) // checks if there are checkers outside players homebase -> if not player can bear off
+    {
+        int checkercount=0;
+        boolean ret=false;
+        if(playerMoving==1)
+        {
+            for(int i=6;i<=23;i++) // Check if there are checkers outside whites homebase
+            {
+                for(int u=0;u<=4;u++)
+                {
+                    if((this.Board_Checker2darr[i][u]!=null)&&(this.Board_Checker2darr[i][u].getColor_str().equals(ANSI_WHITE)))
+                    {
+                        checkercount=checkercount+1;
+                    }
+                }
+            }
+        }
+        if(playerMoving==2)// Check red's home base for checkers
+        {
+            for(int i=0;i<=17;i++)
+            {
+                for(int u=0;u<=4;u++)
+                {
+                    if((this.Board_Checker2darr[i][u]!=null)&&(this.Board_Checker2darr[i][u].getColor_str().equals(ANSI_RED)))
+                    {
+                        checkercount=checkercount+1;
+                    }
+                }
+            }
+        }
+        if(checkercount==0)
+        {
+            ret=true;
+        }
+        return ret;
+    }
+    boolean checkForWin(int playerMoving)
+    {
+        if(getPipCount(playerMoving)==0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
 }
 
