@@ -6,6 +6,7 @@ public class Checker
     private int index_int;
     private int position_int;
     private int pip_int;
+    private int barindex_int;
     public Checker (String color_str,int index_int,int position_int,int pip_int)
     {
         this.color_str=color_str;
@@ -44,5 +45,11 @@ public class Checker
         this.pip_int = pip_int;
     }
 
+    public void setBarindex_int(int barindex_int) {
+        this.barindex_int = barindex_int;
+    }
 
+    public int getBarindex_int() {
+        return barindex_int;
+    }
 }

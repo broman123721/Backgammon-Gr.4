@@ -7,6 +7,8 @@ public class Board
     private Checker[][] Board_Checker2darr = new Checker[24][5];
     private Checker[] beamWhite_Checkerarr=new Checker[5];
     private Checker[] beamRed_Checkerarr=new Checker[5];
+    private int barPointerp1_int=0;
+    private int barPointerp2_int=0;
     private int stake_int;
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED = "\u001B[31m";
@@ -51,7 +53,7 @@ public class Board
         Checker help= new Checker("default",-1,-1,-1);
         int pipCount=0;
 
-        for(int i=0; i<=23;i++)
+        for(int i=0; i<=23;i++) // Count pips from checkers on board
         {
             help=returnTop(i);
             if(playerMoving==1)
@@ -75,6 +77,17 @@ public class Board
                         pipCount=pipCount+help.getPip_int();
                     }
                 }
+            }
+        }
+        for(int i=0;i<=4;i++)  // Count pips from checkers on beam
+        {
+            if ((playerMoving==1)&&(beamWhite_Checkerarr[i]!=null))
+            {
+               pipCount=pipCount+ beamWhite_Checkerarr[i].getPip_int();
+            }
+            if ((playerMoving==2)&&(beamRed_Checkerarr[i]!=null))
+            {
+                pipCount=pipCount+ beamRed_Checkerarr[i].getPip_int();
             }
         }
         return pipCount;
@@ -136,36 +149,35 @@ public class Board
             System.out.println();
         }
         System.out.println();
-        System.out.printf("%-24s","on Beam:");
-        switch(playerTurn)
+        System.out.printf("%-24s","on Beam White:");
+
+        //Print
+        for(int v=0;v<=4;v++)
         {
-            case(1):
-                for(int v=0;v<=4;v++)
-                {
-                    if(this.beamWhite_Checkerarr[v]==null)
-                    {
-                        System.out.printf("%-15s",ANSI_WHITE+"[ ]"+ANSI_RESET);
-                    }
-                    else
-                    {
-                        System.out.printf("%-15s","["+this.beamWhite_Checkerarr[v].getColor_str()+ "o"+ANSI_RESET+"]");
-                    }
-                }
-                break;
-            case(2):
-                for(int v=0;v<=4;v++)
-                {
-                    if(this.beamRed_Checkerarr[v]==null)
-                    {
-                        System.out.printf("%-15s",ANSI_WHITE+"[ ]"+ANSI_RESET);
-                    }
-                    else
-                    {
-                        System.out.printf("%-15s","["+this.beamRed_Checkerarr[v].getColor_str()+ "o"+ANSI_RESET+"]");
-                    }
-                }
-                break;
+            if(this.beamWhite_Checkerarr[v]==null)
+            {
+                System.out.printf("%-15s",ANSI_WHITE+"[ ]"+ANSI_RESET);
+            }
+            else
+            {
+                System.out.printf("%-15s","["+this.beamWhite_Checkerarr[v].getColor_str()+ "o"+ANSI_RESET+"]");
+            }
         }
+        System.out.println();
+        System.out.printf("%-24s","on Beam Red:");
+        for(int v=0;v<=4;v++)
+        {
+            if(this.beamRed_Checkerarr[v]==null)
+            {
+                System.out.printf("%-15s",ANSI_WHITE+"[ ]"+ANSI_RESET);
+            }
+            else
+            {
+                System.out.printf("%-15s","["+this.beamRed_Checkerarr[v].getColor_str()+ "o"+ANSI_RESET+"]");
+            }
+        }
+
+
         System.out.println();
         System.out.println();
 
@@ -446,31 +458,84 @@ public class Board
         }
         return destinations;
     }
-
-    private void moveChecker(int fromIndex, int toIndex, int playerMoving) // executes actual moving of checker
+    private boolean checkforhit(int toIndex, int playerMoving)
     {
-        Checker topCheckerFrom = returnTop(fromIndex); // Checker we want to move
-        Checker topCheckerTo = returnTop(toIndex); // Checker on which we will place the current one
+
+        Checker help =new Checker("default",-1,-1,-1);
+        help=returnTop(toIndex);
+        boolean ret=false;
         if(playerMoving==1)
         {
-            Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()].setPip_int(toIndex+1);
+            if((help.getPosition_int()==0)&&(help.getColor_str().equals(ANSI_RED))) // checks if destination holds exactly 1 enemy Checker
+                ret= true;
         }
         if(playerMoving==2)
         {
-            Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()].setPip_int(24-toIndex);
+            if((help.getPosition_int()==0)&&(help.getColor_str().equals(ANSI_WHITE)))
+                ret= true;
         }
-        // Place the checker we want to move on top of the highest one at the destination
-        Board_Checker2darr[toIndex][topCheckerTo.getPosition_int()+1] = Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()];
-        // Remove the checker from the current position
-        Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()] = null;
-        // Reassign index and position
-        Board_Checker2darr[toIndex][topCheckerTo.getPosition_int()+1].setPosition_int(topCheckerTo.getPosition_int()+1);
-        Board_Checker2darr[toIndex][topCheckerTo.getPosition_int()+1].setIndex_int(toIndex);
+        return ret;
 
+    }
+    private void moveChecker(int fromIndex, int toIndex, int playerMoving) // executes actual moving of checker
+    {
+        if(checkforhit(toIndex,playerMoving)==false) // not a hit -> normal move
+        {
+            Checker topCheckerFrom = returnTop(fromIndex); // Checker we want to move
+            Checker topCheckerTo = returnTop(toIndex); // Checker on which we will place the current one
 
+            if(playerMoving==1) //Update Pip
+            {
+                Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()].setPip_int(toIndex+1);
+            }
+            if(playerMoving==2)
+            {
+                Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()].setPip_int(24-toIndex);
+            }
 
-        // Print the updated board
-        this.highlightOneheckerandPrint(toIndex,playerMoving);
+            // Place the checker we want to move on top of the highest one at the destination
+            Board_Checker2darr[toIndex][topCheckerTo.getPosition_int()+1] = Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()];
+            // Remove the checker from the current position
+            Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()] = null;
+            // Reassign index and position
+            Board_Checker2darr[toIndex][topCheckerTo.getPosition_int()+1].setPosition_int(topCheckerTo.getPosition_int()+1);
+            Board_Checker2darr[toIndex][topCheckerTo.getPosition_int()+1].setIndex_int(toIndex);
+            // Print the updated board
+            this.highlightOneheckerandPrint(toIndex,playerMoving);
+        }
+        if(checkforhit(toIndex,playerMoving)==true) // hit
+        {
+            Checker topCheckerFrom = returnTop(fromIndex); // Checker we want to move
+            Checker topCheckerTo = returnTop(toIndex); // Checker to be hit
+
+            if(playerMoving==1)
+            {
+                topCheckerTo.setPip_int(25); // update pip for hit checker
+                beamRed_Checkerarr[barPointerp1_int]=topCheckerTo; // place checker on beam
+                barPointerp2_int=barPointerp2_int+1; // increase Stackpointer
+
+                Board_Checker2darr[toIndex][0] = Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()]; //move hitting checker
+                Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()] = null; // remove hitting checker from old position
+                topCheckerFrom.setIndex_int(toIndex);
+                topCheckerFrom.setPosition_int(0); // will be new checker at pos 0
+                topCheckerFrom.setPip_int(toIndex+1);
+            }
+            if(playerMoving==2)
+            {
+                topCheckerTo.setPip_int(25); // update pip for hit checker
+                beamWhite_Checkerarr[barPointerp1_int]=topCheckerTo; // place checker on beam
+                barPointerp1_int=barPointerp1_int+1; // increase Stackpointer
+
+                Board_Checker2darr[toIndex][0] = Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()]; //move hitting checker
+                Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()] = null; // remove hitting checker from old position
+
+                topCheckerFrom.setIndex_int(toIndex);
+                topCheckerFrom.setPosition_int(0); // will be new checker at pos 0
+                topCheckerFrom.setPip_int(24-toIndex);
+            }
+
+        }
+
 
     }
 
