@@ -25,7 +25,7 @@ public class main
       // START TEST CODE
       Game backgammonGame = new Game("player1", "player2"); //new game with fixed playernames for easy debugging
       backgammonGame.playGame();
-      /*
+/*
       List<Integer> freeCheckers = new ArrayList<>();
       List<Integer> destination = new ArrayList<>();
       int[] dice={4,4}; //sample dice to test calcmoves
@@ -59,8 +59,9 @@ public class main
 
         System.out.println("This Checker can move to: " + (destination.get(i))); //maybe put this in a variable
       }
-*/
 
+
+*/
     }
       //END TEST CODE
 

@@ -1,3 +1,4 @@
+import javax.swing.plaf.IconUIResource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -7,6 +8,9 @@ public class Board
     private Checker[][] Board_Checker2darr = new Checker[24][5];
     private Checker[] beamWhite_Checkerarr=new Checker[5];
     private Checker[] beamRed_Checkerarr=new Checker[5];
+    private int barPointerWhite_int =0;
+    private int barPointerRed_int =0;
+
     private int stake_int;
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED = "\u001B[31m";
@@ -18,7 +22,23 @@ public class Board
         this.stake_int=stake_int;
     }
 
-    public void fillPoints(int index, int numCheckers,String Color) // index = pointNumber | numCheckers = number of Checkers
+    public void setBeamWhite_Checkerarr(Checker[] beamWhite_Checkerarr) {
+        this.beamWhite_Checkerarr = beamWhite_Checkerarr;
+    }
+
+    public void setBeamRed_Checkerarr(Checker[] beamRed_Checkerarr) {
+        this.beamRed_Checkerarr = beamRed_Checkerarr;
+    }
+
+    public void setBarPointerRed_int(int barPointerRed_int) {
+        this.barPointerRed_int = barPointerRed_int;
+    }
+
+    public void setBarPointerWhite_int(int barPointerWhite_int) {
+        this.barPointerWhite_int = barPointerWhite_int;
+    }
+
+    public void fillPoints(int index, int numCheckers, String Color) // index = pointNumber | numCheckers = number of Checkers
     {
         for(int i=0;i <numCheckers;i++)
         {
@@ -37,6 +57,7 @@ public class Board
     }
     public void createBoard() //Inserts Checkers intheir initial positions
     {
+
         fillPoints(1,2,ANSI_RED);
         fillPoints(6,5,ANSI_WHITE);
         fillPoints(8,3,ANSI_WHITE);
@@ -45,13 +66,26 @@ public class Board
         fillPoints(17,3,ANSI_RED);
         fillPoints(19,5,ANSI_RED);
         fillPoints(24,2,ANSI_WHITE);
+
+         //for testing Bearing off
+         /*
+        fillPoints(24,3,ANSI_RED);
+        fillPoints(23,5,ANSI_RED);
+        fillPoints(22,2,ANSI_RED);
+        fillPoints(21,5,ANSI_RED);
+
+        fillPoints(1,5,ANSI_WHITE);
+        fillPoints(2,3,ANSI_WHITE);
+        fillPoints(3,5,ANSI_WHITE);
+        fillPoints(4,2,ANSI_WHITE);*/
+
     }
     public int getPipCount(int playerMoving)
     {
         Checker help= new Checker("default",-1,-1,-1);
         int pipCount=0;
 
-        for(int i=0; i<=23;i++)
+        for(int i=0; i<=23;i++) // Count pips from checkers on board
         {
             help=returnTop(i);
             if(playerMoving==1)
@@ -75,6 +109,17 @@ public class Board
                         pipCount=pipCount+help.getPip_int();
                     }
                 }
+            }
+        }
+        for(int i=0;i<=4;i++)  // Count pips from checkers on beam
+        {
+            if ((playerMoving==1)&&(beamWhite_Checkerarr[i]!=null))
+            {
+               pipCount=pipCount+ beamWhite_Checkerarr[i].getPip_int();
+            }
+            if ((playerMoving==2)&&(beamRed_Checkerarr[i]!=null))
+            {
+                pipCount=pipCount+ beamRed_Checkerarr[i].getPip_int();
             }
         }
         return pipCount;
@@ -136,36 +181,35 @@ public class Board
             System.out.println();
         }
         System.out.println();
-        System.out.printf("%-24s","on Beam:");
-        switch(playerTurn)
+        System.out.printf("%-24s","on Beam White:");
+
+        //Print
+        for(int v=0;v<=4;v++)
         {
-            case(1):
-                for(int v=0;v<=4;v++)
-                {
-                    if(this.beamWhite_Checkerarr[v]==null)
-                    {
-                        System.out.printf("%-15s",ANSI_WHITE+"[ ]"+ANSI_RESET);
-                    }
-                    else
-                    {
-                        System.out.printf("%-15s","["+this.beamWhite_Checkerarr[v].getColor_str()+ "o"+ANSI_RESET+"]");
-                    }
-                }
-                break;
-            case(2):
-                for(int v=0;v<=4;v++)
-                {
-                    if(this.beamRed_Checkerarr[v]==null)
-                    {
-                        System.out.printf("%-15s",ANSI_WHITE+"[ ]"+ANSI_RESET);
-                    }
-                    else
-                    {
-                        System.out.printf("%-15s","["+this.beamRed_Checkerarr[v].getColor_str()+ "o"+ANSI_RESET+"]");
-                    }
-                }
-                break;
+            if(this.beamWhite_Checkerarr[v]==null)
+            {
+                System.out.printf("%-15s",ANSI_WHITE+"[ ]"+ANSI_RESET);
+            }
+            else
+            {
+                System.out.printf("%-15s","["+this.beamWhite_Checkerarr[v].getColor_str()+ "o"+ANSI_RESET+"]");
+            }
         }
+        System.out.println();
+        System.out.printf("%-24s","on Beam Red:");
+        for(int v=0;v<=4;v++)
+        {
+            if(this.beamRed_Checkerarr[v]==null)
+            {
+                System.out.printf("%-15s",ANSI_WHITE+"[ ]"+ANSI_RESET);
+            }
+            else
+            {
+                System.out.printf("%-15s","["+this.beamRed_Checkerarr[v].getColor_str()+ "o"+ANSI_RESET+"]");
+            }
+        }
+
+
         System.out.println();
         System.out.println();
 
@@ -384,13 +428,59 @@ public class Board
         int destination_index =0;
 
         List<Integer> destinations = new ArrayList<>(4);
-        //TODO BEARING OFF if all in last quarter, move could be to destination -1 and in promptUserPickDestination() have a if(destination==-1) --> bear off
-        boolean bearingoffcondition=false;
 
-        if(bearingoffcondition)
+        if(canBearOff(playerMoving))
         {
+            if(playerMoving==1) //moves down the board and array -> destination is pickedchecker - movAmount
+            {
+                dest_int[0]=pickedChecker-dice[0];
+                dest_int[1]=pickedChecker-dice[1];
+                dest_int[2]=pickedChecker-(dice[0]+dice[1]);
+
+                for(int i=0;i<=1;i++) // run trough all combinatio [dice1], [dice2], [dice1+dice2]
+                {
+                    if (dest_int[i] >= -1) // valid destination
+                    {
+                        if(dest_int[i]==-1) {
+                            destinations.add(destination_index, dest_int[i]);
+                            destination_index++;
+                        }
+                        else if((isSpaceAvailable(playerMoving, dest_int[i]))&&(dest_int[i]!=pickedChecker))
+                        {
+                            destinations.add(destination_index, dest_int[i]);
+                            destination_index++;
+                        }
+                    }
+
+                }
+            }
+            if(playerMoving==2) //moves up the board and array -> destination is pickedchecker + movAmount
+            {
+                dest_int[0]=pickedChecker+dice[0];
+                dest_int[1]=pickedChecker+dice[1];
+                dest_int[2]=pickedChecker+dice[0]+dice[1];
+
+                for(int i=0;i<=2;i++)
+                {
+                    if (dest_int[i] <= 24) // valid destination
+                    {
+                        if(dest_int[i]==24)
+                        {
+                            destinations.add(destination_index, dest_int[i]);
+                            destination_index++;
+                        }
+                        else if((isSpaceAvailable(playerMoving, dest_int[i]))&&(dest_int[i]!=pickedChecker))
+                        {
+                            destinations.add(destination_index, dest_int[i]); // save valid destination to return list
+                            destination_index++;
+                        }
+                    }
+
+                }
+            }
 
         }
+
         else //normal moving
         {
             if(playerMoving==1) //moves down the board and array -> destination is pickedchecker - movAmount
@@ -446,34 +536,265 @@ public class Board
         }
         return destinations;
     }
-
-    private void moveChecker(int fromIndex, int toIndex, int playerMoving) // executes actual moving of checker
+    public int[] calculateMovesFromBeam(int playerMoving, int[] dice)
     {
-        Checker topCheckerFrom = returnTop(fromIndex); // Checker we want to move
-        Checker topCheckerTo = returnTop(toIndex); // Checker on which we will place the current one
+        boolean nopickpossible=false;
+        boolean succesfullPick=false;
+        int[]destinations={-1,-1};
+        Scanner scanner = new Scanner(System.in);
+        int choice_int=0;
+
+        if(playerMoving ==1)
+        {
+            for(int i=0;i<=1;i++)
+            {
+                if(dice[i]!=0)
+                {
+                    if(isSpaceAvailable(playerMoving,24-dice[i]))
+                    {
+                        destinations[i]=24-dice[i];
+                    }
+                }
+
+            }
+        }
+        if(playerMoving ==2)
+        {
+            for(int i=0;i<=1;i++)
+            {
+                if(dice[i]!=0)
+                {
+                    if(isSpaceAvailable(playerMoving,dice[i]-1))
+                    {
+                        destinations[i]=dice[i]-1;
+                    }
+                }
+
+            }
+        }
+        while(succesfullPick==false)
+        {
+            for(int i=0;i<2;i++)
+            {
+                if((playerMoving ==1)&&(destinations[i]!=-1))
+                {
+                    System.out.println("Enter "+(i+1)+" to move Checker to position "+(1+destinations[i]));
+                }
+                if((playerMoving ==2)&&(destinations[i]!=-1))
+                {
+                    System.out.println("Enter "+(i+1)+" to move Checker to position "+(24-destinations[i]));
+                }
+                else if((destinations[0]==-1)&&(destinations[1]==-1))
+                {
+                    if(i==1) // will go through loop twice so only print it once
+                    {
+                        System.out.println("No move Possible");
+                    }
+
+                    dice[0]=0;
+                    dice[1]=0;
+                    succesfullPick=true;
+                    nopickpossible=true;
+                }
+            }
+            if(nopickpossible==false)
+            {
+                choice_int = scanner.nextInt()-1; // get user input
+                if((choice_int>=0)&&(choice_int<2)&&(destinations[choice_int]>=0)) // if move is legal make it and calculate new dice
+                {
+                    moveCheckerFromBeam(destinations[choice_int], playerMoving);
+                    highlightOneheckerandPrint(destinations[choice_int],playerMoving);
+                    dice[choice_int]=0; // reset dice
+                    succesfullPick=true;
+                }
+                else
+                {
+                    System.out.println("Wrong input, try again!");
+                }
+            }
+
+
+        }
+        return dice;
+    }
+    private boolean checkForHit(int toIndex, int playerMoving)
+    {
+
+        Checker help =new Checker("default",-1,-1,-1);
+        help=returnTop(toIndex);
+        boolean ret=false;
         if(playerMoving==1)
         {
-            Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()].setPip_int(toIndex+1);
+            if((help.getPosition_int()==0)&&(help.getColor_str().equals(ANSI_RED))) // checks if destination holds exactly 1 enemy Checker
+                ret= true;
         }
         if(playerMoving==2)
         {
-            Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()].setPip_int(24-toIndex);
+            if((help.getPosition_int()==0)&&(help.getColor_str().equals(ANSI_WHITE)))
+                ret= true;
         }
-        // Place the checker we want to move on top of the highest one at the destination
-        Board_Checker2darr[toIndex][topCheckerTo.getPosition_int()+1] = Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()];
-        // Remove the checker from the current position
-        Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()] = null;
-        // Reassign index and position
-        Board_Checker2darr[toIndex][topCheckerTo.getPosition_int()+1].setPosition_int(topCheckerTo.getPosition_int()+1);
-        Board_Checker2darr[toIndex][topCheckerTo.getPosition_int()+1].setIndex_int(toIndex);
+
+        return ret;
+
+    }
+    private void moveChecker(int fromIndex, int toIndex, int playerMoving) // executes actual moving of checker
+    {
+        if(checkForHit(toIndex,playerMoving)==false) // not a hit -> normal move
+        {
+            Checker topCheckerFrom = returnTop(fromIndex); // Checker we want to move
+            Checker topCheckerTo = returnTop(toIndex); // Checker on which we will place the current one
+
+            if(playerMoving==1) //Update Pip
+            {
+                Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()].setPip_int(toIndex+1);
+            }
+            if(playerMoving==2)
+            {
+                Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()].setPip_int(24-toIndex);
+            }
+
+            // Place the checker we want to move on top of the highest one at the destination
+            Board_Checker2darr[toIndex][topCheckerTo.getPosition_int()+1] = Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()];
+            // Remove the checker from the current position
+            Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()] = null;
+            // Reassign index and position
+            Board_Checker2darr[toIndex][topCheckerTo.getPosition_int()+1].setPosition_int(topCheckerTo.getPosition_int()+1);
+            Board_Checker2darr[toIndex][topCheckerTo.getPosition_int()+1].setIndex_int(toIndex);
+            // Print the updated board
+            this.highlightOneheckerandPrint(toIndex,playerMoving);
+        }
+        if(checkForHit(toIndex,playerMoving)==true) // hit
+        {
+            Checker topCheckerFrom = returnTop(fromIndex); // Checker we want to move
+            Checker topCheckerTo = returnTop(toIndex); // Checker to be hit
+
+            if(playerMoving==1)
+            {
+                topCheckerTo.setPip_int(25); // update pip for hit red checker
+                beamRed_Checkerarr[barPointerRed_int]=topCheckerTo; // place checker on beam
+                beamRed_Checkerarr[barPointerRed_int].setIndex_int(barPointerRed_int);
+                barPointerRed_int = barPointerRed_int +1; // increase Stackpointer
+
+                Board_Checker2darr[toIndex][0] = Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()]; //move hitting checker
+                Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()] = null; // remove hitting checker from old position
+
+                Board_Checker2darr[toIndex][0].setIndex_int(toIndex);
+                Board_Checker2darr[toIndex][0].setPosition_int(0); // will be new checker at pos 0
+                Board_Checker2darr[toIndex][0].setPip_int(toIndex+1);
+            }
+            if(playerMoving==2)
+            {
+                topCheckerTo.setPip_int(25); // update pip for hit white checker
+                beamWhite_Checkerarr[barPointerWhite_int]=topCheckerTo; // place checker on beam
+                beamWhite_Checkerarr[barPointerWhite_int].setIndex_int(barPointerWhite_int);
+                barPointerWhite_int = barPointerWhite_int +1; // increase Stackpointer
+
+                Board_Checker2darr[toIndex][0] = Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()]; //move hitting checker
+                Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()] = null; // remove hitting checker from old position
+
+                Board_Checker2darr[toIndex][0].setIndex_int(toIndex);
+                Board_Checker2darr[toIndex][0].setPosition_int(0); // will be new checker at pos 0
+                Board_Checker2darr[toIndex][0].setPip_int(24-toIndex);
+            }
+
+        }
 
 
-
-        // Print the updated board
-        this.highlightOneheckerandPrint(toIndex,playerMoving);
 
     }
 
+    public void moveCheckerFromBeam(int toIndex, int playerMoving)
+    {
+        Checker help=returnTop(toIndex); // get checker on which we will move our checker
+        int height=help.getPosition_int(); // get the position where we will place our new checker in
+
+        if(checkForHit(toIndex,playerMoving)==false) // no hit
+        {
+            if (playerMoving==1)
+            {
+                Board_Checker2darr[toIndex][height+1]=this.beamWhite_Checkerarr[this.barPointerWhite_int -1]; //place Checker in Board
+                Board_Checker2darr[toIndex][height+1].setIndex_int(toIndex); // adjust member variables
+                Board_Checker2darr[toIndex][height+1].setPosition_int(height+1);
+                Board_Checker2darr[toIndex][height+1].setPip_int(toIndex+1);
+
+                for(int i=0;i<4;i++) // move up
+                {
+                    beamWhite_Checkerarr[i]=beamWhite_Checkerarr[i+1];
+                }
+                barPointerWhite_int = barPointerWhite_int -1; // decrease beam stack counter
+            }
+            if (playerMoving==2)
+            {
+                Board_Checker2darr[toIndex][height+1]=this.beamRed_Checkerarr[this.barPointerRed_int -1]; //place Checker in Board
+                Board_Checker2darr[toIndex][height+1].setIndex_int(toIndex); // adjust member variables
+                Board_Checker2darr[toIndex][height+1].setPosition_int(height+1);
+                Board_Checker2darr[toIndex][height+1].setPip_int(24-toIndex);
+
+                for(int i=0;i<4;i++) // move up
+                {
+                    beamRed_Checkerarr[i]=beamRed_Checkerarr[i+1];
+                }
+                barPointerRed_int = barPointerRed_int -1; // decrease beam stack counter
+            }
+        }
+        if(checkForHit(toIndex,playerMoving)==true)
+        {
+            //Checker topCheckerFrom = returnTop(fromIndex); // Checker we want to move
+            Checker topCheckerTo = returnTop(toIndex); // Checker to be hit
+
+            if(playerMoving==1)
+            {
+                topCheckerTo.setPip_int(25); // update pip for hit red checker
+                beamRed_Checkerarr[barPointerRed_int]=topCheckerTo; // place checker on beam
+                beamRed_Checkerarr[barPointerRed_int].setIndex_int(barPointerRed_int);
+                barPointerRed_int = barPointerRed_int +1; // increase Stackpointer
+
+                Board_Checker2darr[toIndex][0]=this.beamWhite_Checkerarr[this.barPointerWhite_int -1]; //place Checker in Board
+                Board_Checker2darr[toIndex][0].setIndex_int(toIndex); // adjust member variables
+                Board_Checker2darr[toIndex][0].setPosition_int(0);
+                Board_Checker2darr[toIndex][0].setPip_int(toIndex+1);
+
+                for(int i=0;i<4;i++) // move up
+                {
+                    beamWhite_Checkerarr[i]=beamWhite_Checkerarr[i+1];
+                }
+                barPointerWhite_int = barPointerWhite_int -1; // decrease beam stack counter
+
+            }
+            if(playerMoving==2)
+            {
+                topCheckerTo.setPip_int(25); // update pip for hit white checker
+                beamWhite_Checkerarr[barPointerWhite_int]=topCheckerTo; // place checker on beam
+                beamWhite_Checkerarr[barPointerWhite_int].setIndex_int(barPointerWhite_int);
+                barPointerWhite_int = barPointerWhite_int +1; // increase Stackpointer
+
+                Board_Checker2darr[toIndex][0]=this.beamRed_Checkerarr[this.barPointerRed_int -1]; //place red checker in Board
+                Board_Checker2darr[toIndex][0].setIndex_int(toIndex); // adjust member variables
+                Board_Checker2darr[toIndex][0].setPosition_int(0);
+                Board_Checker2darr[toIndex][0].setPip_int(24-toIndex);
+
+                for(int i=0;i<4;i++) // move up
+                {
+                    beamRed_Checkerarr[i]=beamRed_Checkerarr[i+1];
+                }
+                barPointerRed_int = barPointerRed_int -1; // decrease beam stack counter
+            }
+        }
+    }
+    public boolean hasCheckerOnBeam(int playerMoving)
+    {
+        boolean ret=false;
+
+        if((playerMoving==1)&&(barPointerWhite_int >=1))
+        {
+            ret=true;
+        }
+        if((playerMoving==2)&&(barPointerRed_int >=1))
+        {
+            ret=true;
+        }
+        return ret;
+    }
    public int[] promptUserPickDestination(int pickedChecker , List<Integer> destinations, int playerMoving, int[] dice) // ask user to pick the destination of Checker
    {
        int[] ret =new int[3];
@@ -497,14 +818,26 @@ public class Board
                }
 
            }
-           String choice = scanner.nextLine(); // get user input
-           choice_int =Integer.parseInt(choice)-1; // remove offset from prompt to fit array index
+           choice_int = scanner.nextInt()-1; // get user input
 
            if((choice_int>=0)&&(choice_int<destinations.size())) // if move is legal make it and highlight the moved checker
            {
-               moveChecker(pickedChecker, destinations.get(choice_int), playerMoving);
-               highlightOneheckerandPrint(destinations.get(choice_int),playerMoving);
-               succesfullPick=true;
+               if((destinations.get(choice_int)==-1)||(destinations.get(choice_int)==24)) // bear off
+               {
+                   Checker help =returnTop(pickedChecker);
+                   int height=help.getPosition_int();
+                   Board_Checker2darr[pickedChecker][height]=null;
+                   succesfullPick=true;
+                   printBoard(playerMoving);
+               }
+               else
+               {
+                   moveChecker(pickedChecker, destinations.get(choice_int), playerMoving);
+                   highlightOneheckerandPrint(destinations.get(choice_int),playerMoving);
+                   succesfullPick=true;
+
+               }
+
            }
            else
            {
@@ -527,10 +860,11 @@ public class Board
                dice[1]=0;
                resetflag=true;
            }
-           if((movedistance == (dice[0] + dice[1])) && (resetflag == false))
+           if(movedistance == (dice[0] + dice[1])&&(resetflag==false))
            {
                dice[0]=0;
                dice[1]=0;
+
            }
        }
        if(playerMoving==2)
@@ -547,55 +881,62 @@ public class Board
                dice[1]=0;
                resetflag=true;
            }
-           if((movedistance == (dice[0] + dice[1])) && (resetflag == false))
+           if(movedistance == (dice[0] + dice[1])&&(resetflag==false))
            {
                dice[0]=0;
                dice[1]=0;
-               resetflag=true;
+
            }
        }
-
-
        return ret;
 
    }
-    public int promptUserPickChecker(List<Integer> movableCheckers, int playerMoving) // asks user to pick a checker
+    public boolean canBearOff(int playerMoving) // checks if there are checkers outside players homebase -> if not player can bear off
     {
-        Scanner scanner = new Scanner(System.in);
-        boolean succesfullPick=false;
-        System.out.println();
-        int choice_int=0;
-        while(succesfullPick==false)
+        int checkercount=0;
+        boolean ret=false;
+        if(playerMoving==1)
         {
-            for(int i =0;i<movableCheckers.size();i++)
+            for(int i=6;i<=23;i++) // Check if there are checkers outside whites homebase
             {
-                if(playerMoving==1)
+                for(int u=0;u<=4;u++)
                 {
-                    System.out.println("Enter "+(i+1)+" to move Checker at position "+(movableCheckers.get(i)+1));
+                    if((this.Board_Checker2darr[i][u]!=null)&&(this.Board_Checker2darr[i][u].getColor_str().equals(ANSI_WHITE)))
+                    {
+                        checkercount=checkercount+1;
+                    }
                 }
-                if(playerMoving==2)
-                {
-                    System.out.println("Enter "+(i+1)+" to move Checker at position "+(24-(movableCheckers.get(i))));
-                }
-
-            }
-            System.out.println();
-            String choice = scanner.nextLine();
-
-            choice_int =Integer.parseInt(choice)-1; // remove offset from prompt
-            if((choice_int>=0)&&(choice_int<movableCheckers.size()))
-            {
-                succesfullPick=true;
-
-            }
-            else
-            {
-                System.out.println("Wrong input, try again!");
-                succesfullPick=false;
             }
         }
-
-        return movableCheckers.get(choice_int);
+        if(playerMoving==2)// Check red's home base for checkers
+        {
+            for(int i=0;i<=17;i++)
+            {
+                for(int u=0;u<=4;u++)
+                {
+                    if((this.Board_Checker2darr[i][u]!=null)&&(this.Board_Checker2darr[i][u].getColor_str().equals(ANSI_RED)))
+                    {
+                        checkercount=checkercount+1;
+                    }
+                }
+            }
+        }
+        if(checkercount==0)
+        {
+            ret=true;
+        }
+        return ret;
+    }
+    boolean checkForWin(int playerMoving)
+    {
+        if(getPipCount(playerMoving)==0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
 }

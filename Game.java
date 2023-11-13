@@ -14,17 +14,18 @@ class Game {
 
     private boolean QuitOrRoll() {
         Scanner scanner = new Scanner(System.in);
+        boolean ret=false;
 
         System.out.print("Do you want to play? (yes/no): ");
         String choice = scanner.nextLine().toLowerCase();
 
         if ("yes".equals(choice)) {
-            return true;
+            ret= false;
         } else if ("no".equals(choice)) {
-            return false;
+            ret= true;
         } //Maybe we should make an addition here or to the code later in case an invalid entry is put in?
           //Exception class might be better we can discuss this on Thursday.
-        return false;
+       return ret;
     }
 
     public void playGame() {
@@ -69,30 +70,40 @@ class Game {
 
         //Setup Game, Create Board and necessary variables
         Board myBoard=new Board(8);
+
+        /*testing
+        Checker[] white = new Checker[5];
+        Checker[] red = new Checker[5];
+        white[0]=new Checker("\u001B[37m",0,0,25);
+        white[1]=new Checker("\u001B[37m",0,0,25);
+        myBoard.setBeamWhite_Checkerarr(white);
+        myBoard.setBeamRed_Checkerarr(red);
+        myBoard.setBarPointerRed_int(0);
+        myBoard.setBarPointerWhite_int(2);*/
+
         myBoard.createBoard();
         myBoard.printBoard(currentplayer);
+
+
+
         List<Integer> freeCheckers = new ArrayList<>();
         List<Integer> destination = new ArrayList<>();
         boolean movesPossible=true;
         int pipp1=0;
         int pipp2=0;
         int pickedChecker = -1;
-
+        boolean endGame=false;
 
         while (true)
         {
-            if (!QuitOrRoll()) // either roll or quit game
+            endGame=QuitOrRoll();
+
+            if (endGame==true) // either roll or quit game
             {
-                Scanner QuitOrContinue = new Scanner(System.in);
-                System.out.println("Would you like to quit the game? (yes/no):");
-                String choice = QuitOrContinue.nextLine().toLowerCase();
-
-                if ("yes".equals(choice)) {
-                    System.out.println("Thanks for playing! Goodbye!! :)");
-                    break;
-                } else if ("no".equals(choice)) continue;
-
+               System.out.println("Thanks for playing! Goodbye!! :)");
+               break;
             }
+
             else
             {
                 if(currentplayer==1)
@@ -116,9 +127,7 @@ class Game {
                 {
                     System.out.println("Rolling the dice...");
 
-                    // Test double feature
-                    //diceValues[0]=4; //
-                    //diceValues[1]=4;
+
                     diceValues=Die.rollDice();
 
 
@@ -165,37 +174,66 @@ class Game {
                         System.out.println("Total: " + total);
                         System.out.println();
 
-
-                        freeCheckers =myBoard.findFreeCheckers(currentplayer,diceValues); // find free checkers
-                        if(freeCheckers.size()==0)
+                        if(myBoard.hasCheckerOnBeam(currentplayer)) // CheckeronBeam
                         {
-                            System.out.println("No Moves Possible!"); // no moves possible with this throw of dice
-                            break;
-                        }
-                        myBoard.highlightCheckersandPrint(freeCheckers,currentplayer); // highlight free checkers
-                        pickedChecker=this.promptUserPickChecker(freeCheckers,currentplayer); //ask user to pick a checker to move
-                        destination=myBoard.calculateMoves(pickedChecker,diceValues,currentplayer); // calculatethe possible destinations for that checker
-
-                        for(int i=0;i<destination.size();i++) //show possible destinations of that checker to user
-                        {
-                            if(currentplayer==1)
+                            System.out.println("You have a checker on the Beam");
+                            myBoard.printBoard(currentplayer);
+                            diceValues=myBoard.calculateMovesFromBeam(currentplayer,diceValues);
+                            if((diceValues[0]==0)&&(diceValues[1]==0))
                             {
-                                System.out.println("This Checker can move to: " + (destination.get(i)+1));
+                                movesPossible=false; // end round -> no moves possible
+                                isdouble_int=2; // cancel double
+
                             }
-                            if(currentplayer==2)
-                            {
-                                System.out.println("This Checker can move to: " + (24-destination.get(i)));
-                            }
+
                         }
-                        diceValues=myBoard.promptUserPickDestination(pickedChecker,destination,currentplayer,diceValues); //ask user to pick destination and calculate new dice values
 
-
-                        freeCheckers =myBoard.findFreeCheckers(currentplayer,diceValues); //check if there are movable checkers left after the move with current dice combination
-                        if(freeCheckers.isEmpty()) //  if no moves possible -> End turn else start over
+                        else if(movesPossible==true) //free moves
                         {
-                            System.out.println("No Moves Possible!");
-                            movesPossible=false;
+                            freeCheckers = myBoard.findFreeCheckers(currentplayer,diceValues); // find free checkers
+                            if(myBoard.canBearOff(currentplayer))
+                            {
+                                System.out.println("You can bear off!");
+                            }
+                            if(freeCheckers.size()==0)
+                            {
+                                System.out.println("No Moves Possible!"); // no moves possible with this throw of dice
+                                movesPossible=false;
+                                break;
+                            }
+                            myBoard.highlightCheckersandPrint(freeCheckers,currentplayer); // highlight free checkers
+                            pickedChecker=this.promptUserPickChecker(freeCheckers,currentplayer); //ask user to pick a checker to move
+                            destination=myBoard.calculateMoves(pickedChecker,diceValues,currentplayer); // calculate the possible destinations for that checker
+
+                            for(int i=0;i<destination.size();i++) //show possible destinations of that checker to user
+                            {
+                                if(currentplayer==1)
+                                {
+                                    System.out.println("This Checker can move to: " + (destination.get(i)+1));
+                                }
+                                if(currentplayer==2)
+                                {
+                                    System.out.println("This Checker can move to: " + (24-destination.get(i)));
+                                }
+                            }
+                            diceValues=myBoard.promptUserPickDestination(pickedChecker,destination,currentplayer,diceValues); //ask user to pick destination and calculate new dice values
+
+
+                            freeCheckers =myBoard.findFreeCheckers(currentplayer,diceValues); //check if there are movable checkers left after the move with current dice combination
+                            if(freeCheckers.isEmpty()) //  if no moves possible -> End turn else start over
+                            {
+                                System.out.println("No Moves Possible!");
+                                movesPossible=false;
+                            }
+                            if(myBoard.checkForWin(currentplayer)==true) // End of game
+                            {
+                                System.out.println("Player: "+currentplayer+" won. End of Game!");
+                                isdouble_int=2;
+                                movesPossible=false;
+                                endGame=true;
+                            }
                         }
+
                     }
                     isdouble_int = isdouble_int +1; //increase double loop counter
                 }
@@ -235,9 +273,8 @@ class Game {
 
             }
             System.out.println();
-            String choice = scanner.nextLine();
+            choice_int = scanner.nextInt()-1; //remove offset from prompt
 
-            choice_int =Integer.parseInt(choice)-1; // remove offset from prompt
             if((choice_int>=0)&&(choice_int<movableCheckers.size()))
             {
                succesfullPick=true;
