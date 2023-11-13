@@ -74,7 +74,8 @@ class Game {
         List<Integer> freeCheckers = new ArrayList<>();
         List<Integer> destination = new ArrayList<>();
         boolean movesPossible=true;
-
+        int pipp1=0;
+        int pipp2=0;
         int pickedChecker = -1;
 
 
@@ -97,10 +98,14 @@ class Game {
                 if(currentplayer==1)
                 {
                     System.out.println(player1+"'s Move!");
+                    pipp1= myBoard.getPipCount(currentplayer);
+                    System.out.println("Pipcount:"+pipp1);
                 }
                 if(currentplayer==2)
                 {
                     System.out.println(player2+"'s Move!");
+                    pipp2= myBoard.getPipCount(currentplayer);
+                    System.out.println("Pipcount:"+pipp2);
                 }
                 if(round==0) // Use dice thrown in inital round for first moves
                 {
