@@ -25,12 +25,12 @@ public class Board
             if(Color.equals(ANSI_WHITE)) //Player 1
             {
                 // Create Checker and set its color, index (1-24) and position up the stack
-                this.Board_Checker2darr[index-1][i]=new Checker(Color,index-1,i);
+                this.Board_Checker2darr[index-1][i]=new Checker(Color,index-1,i,index);
             }
             if(Color.equals(ANSI_RED))
             {
                 // Create Checker and set its color, index (24-1) and position up the stack
-                this.Board_Checker2darr[index-1][i]=new Checker(Color,index-1,i);
+                this.Board_Checker2darr[index-1][i]=new Checker(Color,index-1,i,25-index);
             }
 
         }
@@ -46,7 +46,40 @@ public class Board
         fillPoints(19,5,ANSI_RED);
         fillPoints(24,2,ANSI_WHITE);
     }
+    public int getPipCount(int playerMoving)
+    {
+        Checker help= new Checker("default",-1,-1,-1);
+        int pipCount=0;
 
+        for(int i=0; i<=23;i++)
+        {
+            help=returnTop(i);
+            if(playerMoving==1)
+            {
+               for(int u=0;u<=4;u++)
+               {
+                   help=this.Board_Checker2darr[i][u];
+                   if ((help!=null)&&(help.getColor_str()==ANSI_WHITE))
+                   {
+                       pipCount=pipCount+help.getPip_int();
+                   }
+               }
+            }
+            if(playerMoving==2)
+            {
+                for(int u=0;u<=4;u++)
+                {
+                    help=this.Board_Checker2darr[i][u];
+                    if ((help!=null)&&(help.getColor_str()==ANSI_RED))
+                    {
+                        pipCount=pipCount+help.getPip_int();
+                    }
+                }
+            }
+        }
+        return pipCount;
+
+    }
 
 
     public void printBoard(int playerTurn) //depending on playerturn the numbers will be printed 1 = Red 2 = White
@@ -187,13 +220,13 @@ public class Board
     }
     public Checker returnTop(int index) // Returns Top value of selected index (0-23)
     {
-        Checker ret=new Checker("default",-100,-100);
+        Checker ret=new Checker("default",-100,-100,-100);
 
         for(int i=0;i<=4;i++)
         {
             if(Board_Checker2darr[index][0]==null)
             {
-                ret = new Checker("Blank",index,-1); // if empty return checker with pos =-1
+                ret = new Checker("Blank",index,-1,-100); // if empty return checker with pos =-1
                 break;
             }
             if(Board_Checker2darr[index][i]==null)
@@ -248,7 +281,7 @@ public class Board
         List<Integer> ret = new ArrayList<>();
         List<Integer> destinations=new ArrayList<>();
 
-        Checker  help=new Checker("default",-100,-100);
+        Checker  help=new Checker("default",-100,-100,-100);
         int u=0;
         for(int i=0;i<=23;i++)
         {
@@ -310,7 +343,7 @@ public class Board
     }
     void highlightCheckersandPrint(List<Integer> movablecheckers,int playerMoving) // highlights all movable checkers green for current player
     {
-        Checker help=new Checker("default",-100,-100);
+        Checker help=new Checker("default",-100,-100,-100);
         String color;
         int index;
         int position;
@@ -418,7 +451,14 @@ public class Board
     {
         Checker topCheckerFrom = returnTop(fromIndex); // Checker we want to move
         Checker topCheckerTo = returnTop(toIndex); // Checker on which we will place the current one
-
+        if(playerMoving==1)
+        {
+            Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()].setPip_int(toIndex+1);
+        }
+        if(playerMoving==2)
+        {
+            Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()].setPip_int(24-toIndex);
+        }
         // Place the checker we want to move on top of the highest one at the destination
         Board_Checker2darr[toIndex][topCheckerTo.getPosition_int()+1] = Board_Checker2darr[fromIndex][topCheckerFrom.getPosition_int()];
         // Remove the checker from the current position
