@@ -497,8 +497,7 @@ public class Board
                }
 
            }
-           String choice = scanner.nextLine(); // get user input
-           choice_int =Integer.parseInt(choice)-1; // remove offset from prompt to fit array index
+           choice_int = scanner.nextInt()-1; // get user input
 
            if((choice_int>=0)&&(choice_int<destinations.size())) // if move is legal make it and highlight the moved checker
            {
@@ -559,44 +558,7 @@ public class Board
        return ret;
 
    }
-    public int promptUserPickChecker(List<Integer> movableCheckers, int playerMoving) // asks user to pick a checker
-    {
-        Scanner scanner = new Scanner(System.in);
-        boolean succesfullPick=false;
-        System.out.println();
-        int choice_int=0;
-        while(succesfullPick==false)
-        {
-            for(int i =0;i<movableCheckers.size();i++)
-            {
-                if(playerMoving==1)
-                {
-                    System.out.println("Enter "+(i+1)+" to move Checker at position "+(movableCheckers.get(i)+1));
-                }
-                if(playerMoving==2)
-                {
-                    System.out.println("Enter "+(i+1)+" to move Checker at position "+(24-(movableCheckers.get(i))));
-                }
 
-            }
-            System.out.println();
-            String choice = scanner.nextLine();
-
-            choice_int =Integer.parseInt(choice)-1; // remove offset from prompt
-            if((choice_int>=0)&&(choice_int<movableCheckers.size()))
-            {
-                succesfullPick=true;
-
-            }
-            else
-            {
-                System.out.println("Wrong input, try again!");
-                succesfullPick=false;
-            }
-        }
-
-        return movableCheckers.get(choice_int);
-    }
 
 }
 

@@ -235,9 +235,8 @@ class Game {
 
             }
             System.out.println();
-            String choice = scanner.nextLine();
+            choice_int = scanner.nextInt()-1; //remove offset from prompt
 
-            choice_int =Integer.parseInt(choice)-1; // remove offset from prompt
             if((choice_int>=0)&&(choice_int<movableCheckers.size()))
             {
                succesfullPick=true;
