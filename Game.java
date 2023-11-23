@@ -54,6 +54,8 @@ class Game {
 
             int round = 0;
             int[] diceValues = new int[4];
+            int doubleOwner = 0;
+            DoublingCube doublingCube = new DoublingCube();
 
             System.out.println("Let's roll the dice to determine the starting player...");
             while (dicedraw == true) {
@@ -67,11 +69,13 @@ class Game {
                 if (total1 > total2) {
                     System.out.println(player1 + " goes first!");
                     currentplayer = 1;
+                    doubleOwner = 1;
                     dicedraw = false;
                 }
                 if (total1 < total2) {
                     System.out.println(player2 + " goes first!");
                     currentplayer = 2;
+                    doubleOwner = 2;
                     dicedraw = false;
                 }
                 if (total1 == total2) {
@@ -119,11 +123,27 @@ class Game {
                        if (currentplayer == 2) {
                            System.out.println("Player 2: " + player2);
                        }
-                       System.out.println("- Type 'R' if you would like to roll the dice.");
-                       System.out.println("- Type 'P' if you would like to view the pip count:");
-                       System.out.println("- Type 'Q' if you would like to quit the game.");
-                       System.out.println("- Type 'D' if you would like to display the match length and scores.");
+
+                       if (doubleOwner == 1 && currentplayer == 1) {
+                           System.out.println("- Type 'R' if you would like to roll the dice.");
+                           System.out.println("- Type 'P' if you would like to view the pip count:");
+                           System.out.println("- Type 'Q' if you would like to quit the game.");
+                           System.out.println("- Type 'M' if you would like to display the match length and scores.");
+                           System.out.println("- Type 'D' if you would like to use the doubling.");
+                       } else if (doubleOwner == 2 && currentplayer == 2) {
+                           System.out.println("- Type 'R' if you would like to roll the dice.");
+                           System.out.println("- Type 'P' if you would like to view the pip count:");
+                           System.out.println("- Type 'Q' if you would like to quit the game.");
+                           System.out.println("- Type 'M' if you would like to display the match length and scores.");
+                           System.out.println("- Type 'D' if you would like to use the doubling.");
+                       } else {
+                           System.out.println("- Type 'R' if you would like to roll the dice.");
+                           System.out.println("- Type 'P' if you would like to view the pip count:");
+                           System.out.println("- Type 'Q' if you would like to quit the game.");
+                           System.out.println("- Type 'M' if you would like to display the match length and scores.");
+                       }
                        String choice = scanner.nextLine().toUpperCase();
+
 
                        if ("Q".equals(choice)) //quit game
                        {
@@ -132,6 +152,37 @@ class Game {
                        }
 
                        else if("D".equals(choice)){
+                           if (currentplayer == 1 && doubleOwner == 1) {
+                               System.out.println("Player 1:" + player1 + " has requested to double.");
+                           }
+                           else if (currentplayer == 2 && doubleOwner == 2) {
+                               System.out.println("Player 2:" + player2 + " has requested to double.");
+                           }
+                           else{
+                               System.out.println("You cannot choose the double feature as you do not have ownership of the dice.");
+                               break;
+                           }
+                           System.out.println("If you would like to accept type 'A' if you would like to refuse type 'R'");
+                           String choice2 = scanner.nextLine().toUpperCase();
+
+                           if("A".equals(choice2)) {
+                               doublingCube.doubleCube();
+                               if (doubleOwner == 1) {
+                                   System.out.println("Ownership has switched to player 2");
+                                   doubleOwner = 2;
+                               }
+                               else {
+                                   System.out.println("Ownership has switched to player 1");
+                                   doubleOwner = 1;
+                               }
+                           }
+
+                           if("R".equals(choice2)){
+                               System.out.println("Double proposal has been rejected.");
+                           }
+                       }
+
+                       else if("M".equals(choice)){
                            System.out.println("Match Length: " + matchLength);
                            System.out.println("Player 1: " + player1 + "'s score: " + score1);
                            System.out.println("Player 2: " + player2 + "'s score: " + score2);
@@ -263,8 +314,9 @@ class Game {
                                            endGame = true;
                                            if (currentplayer == 1){
                                                score1+=1;
+                                               score1=score1*doublingCube.getValue();
                                            }
-                                           else score2 += 1;
+                                           else score2 += 1; score2 = score2*doublingCube.getValue();//stake increase
                                        }
                                    }
 
@@ -281,7 +333,7 @@ class Game {
                                movesPossible = true;
                            }
                        } else {
-                           throw new InvalidEntryException("Invalid entry. Please enter 'R', 'P', 'D' or 'Q'.");
+                           throw new InvalidEntryException("Invalid entry. Please enter 'R', 'P', 'M', 'D', 'H' or 'Q'.");
                        }
 
                    } catch (InvalidEntryException e) {
@@ -290,7 +342,8 @@ class Game {
                 }
                 /*if (score1 != matchLength | score2 != matchLength){
                     endGame = false;
-                }*/
+                }*/ //Confused on match ending if score matches match length or if match length is for how many games
+                    //the users play.
 
             }
 
