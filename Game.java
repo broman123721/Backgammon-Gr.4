@@ -162,7 +162,13 @@ class Game {
                                System.out.println("You cannot choose the double feature as you do not have ownership of the dice.");
                                break;
                            }
-                           System.out.println("If you would like to accept type 'A' if you would like to refuse type 'R'");
+
+                           if (currentplayer == 1) {
+                               System.out.println("Player 2: " + player2 + " if you would like to accept type 'A' if you would like to refuse type 'R'");
+                           }
+                           if (currentplayer == 2) {
+                               System.out.println("Player 2: " + player1 + " if you would like to accept type 'A' if you would like to refuse type 'R'");
+                           }
                            String choice2 = scanner.nextLine().toUpperCase();
 
                            if("A".equals(choice2)) {
