@@ -28,7 +28,10 @@ public class main
         System.out.print("Enter the name of player 2: ");
         String player2 = scanner.nextLine();
 
-        Game backgammonGame = new Game(player1, player2);
+        System.out.print("Enter the match length:");
+        int matchLength = Integer.parseInt(scanner.nextLine());
+
+        Game backgammonGame = new Game(player1, player2, matchLength);
         backgammonGame.playGame();
 /*
       List<Integer> freeCheckers = new ArrayList<>();

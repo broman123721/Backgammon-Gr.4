@@ -7,9 +7,12 @@ class Game {
     private String player1;
     private String player2;
 
-    public Game(String player1, String player2) {
+    private int matchLength;
+
+    public Game(String player1, String player2, int matchLength) {
         this.player1 = player1; //White
         this.player2 = player2; //Red
+        this.matchLength = matchLength; //Length of match
     }
 
     /*private boolean QuitOrRoll() {
@@ -98,6 +101,8 @@ class Game {
             boolean movesPossible = true;
             int pipp1 = 0;
             int pipp2 = 0;
+            int score1 = 0;
+            int score2 = 0;
             int pickedChecker = -1;
             boolean endGame = false;
 
@@ -117,6 +122,7 @@ class Game {
                        System.out.println("- Type 'R' if you would like to roll the dice.");
                        System.out.println("- Type 'P' if you would like to view the pip count:");
                        System.out.println("- Type 'Q' if you would like to quit the game.");
+                       System.out.println("- Type 'D' if you would like to display the match length and scores.");
                        String choice = scanner.nextLine().toUpperCase();
 
                        if ("Q".equals(choice)) //quit game
@@ -125,14 +131,21 @@ class Game {
                            break;
                        }
 
+                       else if("D".equals(choice)){
+                           System.out.println("Match Length: " + matchLength);
+                           System.out.println("Player 1: " + player1 + "'s score: " + score1);
+                           System.out.println("Player 2: " + player2 + "'s score: " + score2);
+                           System.out.println("");
+                       }
+
                        else if ("P".equals(choice)) {
                            if (currentplayer == 1) {
                                pipp1 = myBoard.getPipCount(currentplayer);
-                               System.out.println("Your Pipcount is:" + pipp1);
+                               System.out.println("Your Pip count is:" + pipp1);
                            }
                            if (currentplayer == 2) {
                                pipp2 = myBoard.getPipCount(currentplayer);
-                               System.out.println("Your Pipcount is:" + pipp2);
+                               System.out.println("Your Pip count is:" + pipp2);
                            }
                        }
 
@@ -248,6 +261,10 @@ class Game {
                                            isdouble_int = 2;
                                            movesPossible = false;
                                            endGame = true;
+                                           if (currentplayer == 1){
+                                               score1+=1;
+                                           }
+                                           else score2 += 1;
                                        }
                                    }
 
@@ -264,13 +281,17 @@ class Game {
                                movesPossible = true;
                            }
                        } else {
-                           throw new InvalidEntryException("Invalid entry. Please enter 'R' 'P' or 'Q'.");
+                           throw new InvalidEntryException("Invalid entry. Please enter 'R', 'P', 'D' or 'Q'.");
                        }
 
                    } catch (InvalidEntryException e) {
                        System.out.println(e.getMessage());
                    }
                 }
+                /*if (score1 != matchLength | score2 != matchLength){
+                    endGame = false;
+                }*/
+
             }
 
     }
