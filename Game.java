@@ -336,7 +336,7 @@ class Game {
                                                    System.out.println("Player 2: " + player2 + "You have BackGammoned! :(");
                                                }
                                                else score2 -= 1;
-                                               System.out.println("Player 2:" + player2 +"You have lost you lose a point");
+                                               System.out.println("Player 2:" + player2 +" You have lost you lose a point");
                                            }
                                            if (loser == 1){
                                                if(myBoard.checkForGammon(loser) == true && myBoard.canBearOff(1) == true){
@@ -348,8 +348,9 @@ class Game {
                                                    System.out.println("Player 1: " + player1 + "You have BackGammoned! :(");
                                                }
                                                else score1 -= 1;
-                                               System.out.println("Player 1:" + player1 +"You have lost you lose a point");
+                                               System.out.println("Player 1:" + player1 +" You have lost you lose a point");
                                            }
+                                           System.out.println("Score for player 1: " + score1 + "Score for player 2: " + score2);
                                        }
                                    }
 
