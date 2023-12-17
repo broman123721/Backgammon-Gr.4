@@ -151,23 +151,22 @@ class Game {
                            break;
                        }
 
-                       else if("D".equals(choice)){
+                       else if("D".equals(choice) && (currentplayer == doubleOwner)){
                            if (currentplayer == 1 && doubleOwner == 1) {
                                System.out.println("Player 1:" + player1 + " has requested to double.");
                            }
                            else if (currentplayer == 2 && doubleOwner == 2) {
                                System.out.println("Player 2:" + player2 + " has requested to double.");
                            }
-                           else{
+                           else {
                                System.out.println("You cannot choose the double feature as you do not have ownership of the dice.");
-                               break;
                            }
 
                            if (currentplayer == 1) {
                                System.out.println("Player 2: " + player2 + " if you would like to accept type 'A' if you would like to refuse type 'R'");
                            }
                            if (currentplayer == 2) {
-                               System.out.println("Player 2: " + player1 + " if you would like to accept type 'A' if you would like to refuse type 'R'");
+                               System.out.println("Player 1: " + player1 + " if you would like to accept type 'A' if you would like to refuse type 'R'");
                            }
                            String choice2 = scanner.nextLine().toUpperCase();
 
@@ -318,11 +317,39 @@ class Game {
                                            isdouble_int = 2;
                                            movesPossible = false;
                                            endGame = true;
+                                           int loser = 0;
                                            if (currentplayer == 1){
-                                               score1+=1;
-                                               score1=score1*doublingCube.getValue();
+                                               score1+= 1*doublingCube.getValue();
+                                               loser = 2;
                                            }
-                                           else score2 += 1; score2 = score2*doublingCube.getValue();//stake increase
+                                           else if (currentplayer == 2){
+                                               score2 += 1*doublingCube.getValue();
+                                               loser = 1;
+                                           }//stake increase
+                                           if (loser == 2){
+                                               if(myBoard.checkForGammon(loser) == true && myBoard.canBearOff(2) == true){
+                                                   score2 -= 1*doublingCube.getValue();
+                                                   System.out.println("Player 2: " + player2 + "You have Gammoned! :(");
+                                               } //stake decrease
+                                               else if (myBoard.checkForGammon(loser) == true && myBoard.canBearOff(2) == false) {
+                                                   score2 -= 3*doublingCube.getValue();
+                                                   System.out.println("Player 2: " + player2 + "You have BackGammoned! :(");
+                                               }
+                                               else score2 -= 1;
+                                               System.out.println("Player 2:" + player2 +"You have lost you lose a point");
+                                           }
+                                           if (loser == 1){
+                                               if(myBoard.checkForGammon(loser) == true && myBoard.canBearOff(1) == true){
+                                                   score1 -= 1*doublingCube.getValue();
+                                                   System.out.println("Player 1: " + player1 + "You have Gammoned! :(");
+                                               } //stake decrease
+                                               else if (myBoard.checkForGammon(loser) == true && myBoard.canBearOff(1) == false) {
+                                                   score1 -= 3*doublingCube.getValue();
+                                                   System.out.println("Player 1: " + player1 + "You have BackGammoned! :(");
+                                               }
+                                               else score1 -= 1;
+                                               System.out.println("Player 1:" + player1 +"You have lost you lose a point");
+                                           }
                                        }
                                    }
 
@@ -339,7 +366,7 @@ class Game {
                                movesPossible = true;
                            }
                        } else {
-                           throw new InvalidEntryException("Invalid entry. Please enter 'R', 'P', 'M', 'D', 'H' or 'Q'.");
+                           throw new InvalidEntryException("Invalid entry. Please enter a valid command from the list below.");
                        }
 
                    } catch (InvalidEntryException e) {
@@ -391,7 +418,10 @@ class Game {
 
         return movableCheckers.get(choice_int);
     }
+
+
 }
+
 
 
 
