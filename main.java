@@ -18,21 +18,38 @@ public class main
       myBoard.createBoard();
 
      //Removed test code to make sure player input features work correctly.
-      Scanner scanner = new Scanner(System.in);
-        System.out.println();
-        System.out.println("Welcome to Backgammon!");
 
-        System.out.print("Enter the name of player 1: ");
-        String player1 = scanner.nextLine();
+        while(true)
+        {
+          Scanner scanner = new Scanner(System.in);
+          System.out.println();
 
-        System.out.print("Enter the name of player 2: ");
-        String player2 = scanner.nextLine();
+          System.out.println("Welcome to Backgammon!");
+          System.out.println("Would you like to play or test?!");
+          System.out.println("Enter P for play and T for test");
+          String choice = scanner.nextLine();
+          if("P".equals(choice))
+          {
+            System.out.print("Enter the name of player 1: ");
+            String player1 = scanner.nextLine();
 
-        System.out.print("Enter the match length:");
-        int matchLength = Integer.parseInt(scanner.nextLine());
+            System.out.print("Enter the name of player 2: ");
+            String player2 = scanner.nextLine();
 
-        Game backgammonGame = new Game(player1, player2, matchLength);
-        backgammonGame.playGame();
+            System.out.print("Enter the match length:");
+            int matchLength = Integer.parseInt(scanner.nextLine());
+
+            Game backgammonGame = new Game(player1, player2, matchLength);
+            backgammonGame.playGame();
+          }
+          if("T".equals(choice))
+          {
+            Game backgammonGame = new Game("testPlayer1", "testPlayer2", 100);
+            backgammonGame.testGame();
+          }
+
+        }
+
 /*
       List<Integer> freeCheckers = new ArrayList<>();
       List<Integer> destination = new ArrayList<>();
