@@ -11,20 +11,28 @@ import java.util.Scanner;
 // Position = within lane 0-4
 public class main
 {
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) throws InvalidEntryException {
       int player =2;
 
       Board myBoard=new Board(8);
       myBoard.createBoard();
 
-
+     //Removed test code to make sure player input features work correctly.
       Scanner scanner = new Scanner(System.in);
+        System.out.println();
+        System.out.println("Welcome to Backgammon!");
 
+        System.out.print("Enter the name of player 1: ");
+        String player1 = scanner.nextLine();
 
-      // START TEST CODE
-      Game backgammonGame = new Game("player1", "player2"); //new game with fixed playernames for easy debugging
-      backgammonGame.playGame();
+        System.out.print("Enter the name of player 2: ");
+        String player2 = scanner.nextLine();
+
+        System.out.print("Enter the match length:");
+        int matchLength = Integer.parseInt(scanner.nextLine());
+
+        Game backgammonGame = new Game(player1, player2, matchLength);
+        backgammonGame.playGame();
 /*
       List<Integer> freeCheckers = new ArrayList<>();
       List<Integer> destination = new ArrayList<>();

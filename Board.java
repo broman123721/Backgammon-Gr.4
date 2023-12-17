@@ -11,15 +11,27 @@ public class Board
     private int barPointerWhite_int =0;
     private int barPointerRed_int =0;
 
+    private int borneOffp1 = 0;
+    private int borneOffp2 = 0;
+
     private int stake_int;
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_WHITE = "\u001B[37m";
     public static final String ANSI_BLUE = "\u001B[34m";
     public static final String ANSI_GREEN = "\u001B[32m";
+
     public Board(int stake_int)
     {
         this.stake_int=stake_int;
+    }
+
+    public int getBorneOffp1(){
+        return borneOffp1;
+    }
+
+    public int getBorneOffp2(){
+        return borneOffp2;
     }
 
     public void setBeamWhite_Checkerarr(Checker[] beamWhite_Checkerarr) {
@@ -58,17 +70,17 @@ public class Board
     public void createBoard() //Inserts Checkers intheir initial positions
     {
 
-        fillPoints(1,2,ANSI_RED);
+        /*fillPoints(1,2,ANSI_RED);
         fillPoints(6,5,ANSI_WHITE);
         fillPoints(8,3,ANSI_WHITE);
         fillPoints(12,5,ANSI_RED);
         fillPoints(13,5,ANSI_WHITE);
         fillPoints(17,3,ANSI_RED);
         fillPoints(19,5,ANSI_RED);
-        fillPoints(24,2,ANSI_WHITE);
+        fillPoints(24,2,ANSI_WHITE);*/
 
          //for testing Bearing off
-         /*
+
         fillPoints(24,3,ANSI_RED);
         fillPoints(23,5,ANSI_RED);
         fillPoints(22,2,ANSI_RED);
@@ -77,7 +89,7 @@ public class Board
         fillPoints(1,5,ANSI_WHITE);
         fillPoints(2,3,ANSI_WHITE);
         fillPoints(3,5,ANSI_WHITE);
-        fillPoints(4,2,ANSI_WHITE);*/
+        fillPoints(4,2,ANSI_WHITE);
 
     }
     public int getPipCount(int playerMoving)
@@ -662,6 +674,7 @@ public class Board
             Board_Checker2darr[toIndex][topCheckerTo.getPosition_int()+1].setIndex_int(toIndex);
             // Print the updated board
             this.highlightOneheckerandPrint(toIndex,playerMoving);
+
         }
         if(checkForHit(toIndex,playerMoving)==true) // hit
         {
@@ -829,6 +842,8 @@ public class Board
                    Board_Checker2darr[pickedChecker][height]=null;
                    succesfullPick=true;
                    printBoard(playerMoving);
+                   if (playerMoving == 1) borneOffp1 += 1;
+                   if (playerMoving == 2) borneOffp2 += 1;
                }
                else
                {
@@ -937,6 +952,20 @@ public class Board
         {
             return false;
         }
+    }
+
+    boolean checkForGammon(int loser)
+    {
+        if(loser == 1){
+            if(borneOffp1 == 0) {
+                return true;
+            }
+        } else if (loser == 2) {
+            if(borneOffp2 == 0){
+                return true;
+            }
+        }
+        return false;
     }
 
 }

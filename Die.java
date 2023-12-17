@@ -21,4 +21,12 @@ class Die {
         return new int[]{result1, result2};
 
      }
+
+     //Dice command causes the subsequent dice roll
+     public static int[] diceEntry(int die1, int die2){
+        System.out.println("*MANUAL DICE ENTRY*");
+
+        return new int[]{die1, die2};
+     }
+
 }
