@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 class Game {
 
@@ -130,17 +133,21 @@ class Game {
                            System.out.println("- Type 'Q' if you would like to quit the game.");
                            System.out.println("- Type 'M' if you would like to display the match length and scores.");
                            System.out.println("- Type 'D' if you would like to use the doubling.");
+                           System.out.println("- Type 'T' if you would like to read the test file.");
+
                        } else if (doubleOwner == 2 && currentplayer == 2) {
                            System.out.println("- Type 'R' if you would like to roll the dice.");
                            System.out.println("- Type 'P' if you would like to view the pip count:");
                            System.out.println("- Type 'Q' if you would like to quit the game.");
                            System.out.println("- Type 'M' if you would like to display the match length and scores.");
                            System.out.println("- Type 'D' if you would like to use the doubling.");
+                           System.out.println("- Type 'T' if you would like to read the test file.");
                        } else {
                            System.out.println("- Type 'R' if you would like to roll the dice.");
                            System.out.println("- Type 'P' if you would like to view the pip count:");
                            System.out.println("- Type 'Q' if you would like to quit the game.");
                            System.out.println("- Type 'M' if you would like to display the match length and scores.");
+                           System.out.println("- Type 'T' if you would like to read the test file.");
                        }
                        String choice = scanner.nextLine().toUpperCase();
 
@@ -365,6 +372,246 @@ class Game {
                            } else if (currentplayer == 2) {
                                currentplayer = 1;
                                movesPossible = true;
+                           }
+                       }
+                       else if("T".equals(choice))
+                       {
+                           String filePath = "testfile"; // Replace this with the actual file path
+
+                           try {
+                               FileReader fileReader = new FileReader(filePath);
+                               BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+                               String line;
+                               while ((line = bufferedReader.readLine()) != null)
+                               {
+                                   if ("Q".equals(line)) //quit game
+                                   {
+                                       System.out.println("Thanks for playing! Goodbye!! :)");
+                                       break;
+                                   }
+
+                                   else if("D".equals(line) && (currentplayer == doubleOwner)){
+                                       if (currentplayer == 1 && doubleOwner == 1) {
+                                           System.out.println("Player 1:" + player1 + " has requested to double.");
+                                       }
+                                       else if (currentplayer == 2 && doubleOwner == 2) {
+                                           System.out.println("Player 2:" + player2 + " has requested to double.");
+                                       }
+                                       else {
+                                           System.out.println("You cannot choose the double feature as you do not have ownership of the dice.");
+                                       }
+
+                                       if (currentplayer == 1) {
+                                           System.out.println("Player 2: " + player2 + " if you would like to accept type 'A' if you would like to refuse type 'R'");
+                                       }
+                                       if (currentplayer == 2) {
+                                           System.out.println("Player 1: " + player1 + " if you would like to accept type 'A' if you would like to refuse type 'R'");
+                                       }
+                                       String choice2 = scanner.nextLine().toUpperCase();
+
+                                       if("A".equals(line)) {
+                                           doublingCube.doubleCube();
+                                           if (doubleOwner == 1) {
+                                               System.out.println("Ownership has switched to player 2");
+                                               doubleOwner = 2;
+                                           }
+                                           else {
+                                               System.out.println("Ownership has switched to player 1");
+                                               doubleOwner = 1;
+                                           }
+                                       }
+
+                                       if("R".equals(line)){
+                                           System.out.println("Double proposal has been rejected.");
+                                       }
+                                   }
+
+                                   else if("M".equals(line)){
+                                       System.out.println("Match Length: " + matchLength);
+                                       System.out.println("Player 1: " + player1 + "'s score: " + score1);
+                                       System.out.println("Player 2: " + player2 + "'s score: " + score2);
+                                       System.out.println("");
+                                   }
+
+                                   else if ("P".equals(line)) {
+                                       if (currentplayer == 1) {
+                                           pipp1 = myBoard.getPipCount(currentplayer);
+                                           System.out.println("Your Pip count is:" + pipp1);
+                                       }
+                                       if (currentplayer == 2) {
+                                           pipp2 = myBoard.getPipCount(currentplayer);
+                                           System.out.println("Your Pip count is:" + pipp2);
+                                       }
+                                   }
+
+                                   else if ("R".equals(line)) {
+                                       if (currentplayer == 1) {
+                                           System.out.println(player1 + "'s Move!");
+                                           pipp1 = myBoard.getPipCount(currentplayer);
+                                           System.out.println("Pipcount:" + pipp1);
+                                       }
+                                       if (currentplayer == 2) {
+                                           System.out.println(player2 + "'s Move!");
+                                           pipp2 = myBoard.getPipCount(currentplayer);
+                                           System.out.println("Pipcount:" + pipp2);
+                                       }
+                                       if (round == 0) // Use dice thrown in inital round for first moves
+                                       {
+                                           System.out.println("Start with these Dice:");
+                                           round = round + 1;
+                                       } else {
+                                           System.out.println("Rolling the dice...");
+
+
+                                           diceValues = Die.rollDice();
+
+
+                                           if (diceValues[0] == diceValues[1]) // double was thrown
+                                           {
+                                               System.out.println("You have a double!");
+                                               System.out.println("Play your two sets of dice sequentially");
+                                               isdouble_int = 0; //while loop will be ran twice
+                                               isdouble_bool = true; // needed so on second iteration of loop the dice can be rewritten to the original throw
+                                               dice_copy = diceValues[0]; // saves the dice double that was thrown
+                                           } else {
+                                               isdouble_int = 1; // regular round only goes through loop once
+                                           }
+                                       }
+
+                                       int total = 0;
+
+                                       while (isdouble_int < 2) // when a double is rolled the loop is ran twice
+                                       {
+                                           if ((isdouble_bool == true) && (isdouble_int == 1)) //reset dice for second round of moves in case of double
+                                           {
+                                               movesPossible = true;
+                                               diceValues[0] = dice_copy;
+                                               diceValues[1] = dice_copy;
+                                               System.out.println("Second Round of Your Double");
+                                           }
+
+                                           while (movesPossible == true)// player has moves left to make
+                                           {
+                                               freeCheckers.clear(); // clear calculated freeCheckers and destinations from last round
+                                               destination.clear();
+
+                                               for (int i = 0; i <= 1; i++) // Print Dice that are not 0 and total value
+                                               {
+                                                   if (diceValues[i] != 0) {
+                                                       System.out.println("Die " + (i + 1) + ": " + diceValues[i]);
+                                                   }
+                                               }
+                                               total = diceValues[0] + diceValues[1];
+                                               System.out.println();
+                                               System.out.println("Total: " + total);
+                                               System.out.println();
+
+                                               if (myBoard.hasCheckerOnBeam(currentplayer)) // CheckeronBeam
+                                               {
+                                                   System.out.println("You have a checker on the Beam");
+                                                   myBoard.printBoard(currentplayer);
+                                                   diceValues = myBoard.calculateMovesFromBeam(currentplayer, diceValues);
+                                                   if ((diceValues[0] == 0) && (diceValues[1] == 0)) {
+                                                       movesPossible = false; // end round -> no moves possible
+                                                       isdouble_int = 2; // cancel double
+
+                                                   }
+
+                                               } else if (movesPossible == true) //free moves
+                                               {
+                                                   freeCheckers = myBoard.findFreeCheckers(currentplayer, diceValues); // find free checkers
+                                                   if (myBoard.canBearOff(currentplayer)) {
+                                                       System.out.println("You can bear off!");
+                                                   }
+                                                   if (freeCheckers.size() == 0) {
+                                                       System.out.println("No Moves Possible!"); // no moves possible with this throw of dice
+                                                       movesPossible = false;
+                                                       break;
+                                                   }
+                                                   myBoard.highlightCheckersandPrint(freeCheckers, currentplayer); // highlight free checkers
+                                                   pickedChecker = this.promptUserPickChecker(freeCheckers, currentplayer); //ask user to pick a checker to move
+                                                   destination = myBoard.calculateMoves(pickedChecker, diceValues, currentplayer); // calculate the possible destinations for that checker
+
+                                                   for (int i = 0; i < destination.size(); i++) //show possible destinations of that checker to user
+                                                   {
+                                                       if (currentplayer == 1) {
+                                                           System.out.println("This Checker can move to: " + (destination.get(i) + 1));
+                                                       }
+                                                       if (currentplayer == 2) {
+                                                           System.out.println("This Checker can move to: " + (24 - destination.get(i)));
+                                                       }
+                                                   }
+                                                   diceValues = myBoard.promptUserPickDestination(pickedChecker, destination, currentplayer, diceValues); //ask user to pick destination and calculate new dice values
+
+
+                                                   freeCheckers = myBoard.findFreeCheckers(currentplayer, diceValues); //check if there are movable checkers left after the move with current dice combination
+                                                   if (freeCheckers.isEmpty()) //  if no moves possible -> End turn else start over
+                                                   {
+                                                       System.out.println("No Moves Possible!");
+                                                       movesPossible = false;
+                                                   }
+                                                   if (myBoard.checkForWin(currentplayer) == true) // End of game
+                                                   {
+                                                       System.out.println("Player: " + currentplayer + " won. End of Game!");
+                                                       isdouble_int = 2;
+                                                       movesPossible = false;
+                                                       endGame = true;
+                                                       int loser = 0;
+                                                       if (currentplayer == 1){
+                                                           score1+= 1*doublingCube.getValue();
+                                                           loser = 2;
+                                                       }
+                                                       else if (currentplayer == 2){
+                                                           score2 += 1*doublingCube.getValue();
+                                                           loser = 1;
+                                                       }//stake increase
+                                                       if (loser == 2){
+                                                           if(myBoard.checkForGammon(loser) == true && myBoard.canBearOff(2) == true){
+                                                               score2 -= 1*doublingCube.getValue();
+                                                               System.out.println("Player 2: " + player2 + "You have Gammoned! :(");
+                                                           } //stake decrease
+                                                           else if (myBoard.checkForGammon(loser) == true && myBoard.canBearOff(2) == false) {
+                                                               score2 -= 3*doublingCube.getValue();
+                                                               System.out.println("Player 2: " + player2 + "You have BackGammoned! :(");
+                                                           }
+                                                           else score2 -= 1;
+                                                           System.out.println("Player 2:" + player2 +" You have lost you lose a point");
+                                                       }
+                                                       if (loser == 1){
+                                                           if(myBoard.checkForGammon(loser) == true && myBoard.canBearOff(1) == true){
+                                                               score1 -= 1*doublingCube.getValue();
+                                                               System.out.println("Player 1: " + player1 + "You have Gammoned! :(");
+                                                           } //stake decrease
+                                                           else if (myBoard.checkForGammon(loser) == true && myBoard.canBearOff(1) == false) {
+                                                               score1 -= 3*doublingCube.getValue();
+                                                               System.out.println("Player 1: " + player1 + "You have BackGammoned! :(");
+                                                           }
+                                                           else score1 -= 1;
+                                                           System.out.println("Player 1:" + player1 +" You have lost you lose a point");
+                                                       }
+                                                       System.out.println("Score for player 1: " + score1 + "Score for player 2: " + score2);
+                                                   }
+                                               }
+
+                                           }
+                                           isdouble_int = isdouble_int + 1; //increase double loop counter
+                                       }
+                                       //At the end of the turn swap player and reset while loop variable
+                                       if (currentplayer == 1) {
+                                           currentplayer = 2;
+                                           movesPossible = true;
+
+                                       } else if (currentplayer == 2) {
+                                           currentplayer = 1;
+                                           movesPossible = true;
+                                       }
+                                   }
+                               }
+
+                               bufferedReader.close();
+                           } catch (IOException e) {
+                               e.printStackTrace();
                            }
                        } else {
                            throw new InvalidEntryException("Invalid entry. Please enter a valid command from the list below.");
