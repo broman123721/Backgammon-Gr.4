@@ -110,6 +110,8 @@ class Game {
         int score1 = 0;
         int score2 = 0;
         int pickedChecker = -1;
+        int borneoffp1 = 0;
+        int borneoffp2 = 0;
         boolean endGame = false;
 
         while (true) {
@@ -315,6 +317,9 @@ class Game {
                                                 myBoard.highlightCheckersandPrint(freeCheckers, currentplayer); // highlight free checkers
                                                 pickedChecker = this.promptUserPickChecker(freeCheckers, currentplayer); //ask user to pick a checker to move
                                                 destination = myBoard.calculateMoves(pickedChecker, diceValues, currentplayer); // calculate the possible destinations for that checker
+                                                borneoffp1 = myBoard.getBorneOffp1();
+                                                borneoffp2 = myBoard.getBorneOffp2();
+
 
                                                 for (int i = 0; i < destination.size(); i++) //show possible destinations of that checker to user
                                                 {
@@ -325,7 +330,7 @@ class Game {
                                                         System.out.println("This Checker can move to: " + (24 - destination.get(i)));
                                                     }
                                                 }
-                                                diceValues = myBoard.promptUserPickDestination(pickedChecker, destination, currentplayer, diceValues); //ask user to pick destination and calculate new dice values
+                                                diceValues = myBoard.promptUserPickDestination(pickedChecker, destination, currentplayer, diceValues, borneoffp1, borneoffp2); //ask user to pick destination and calculate new dice values
 
 
                                                 freeCheckers = myBoard.findFreeCheckers(currentplayer, diceValues); //check if there are movable checkers left after the move with current dice combination
@@ -689,6 +694,8 @@ class Game {
                                        myBoard.highlightCheckersandPrint(freeCheckers, currentplayer); // highlight free checkers
                                        pickedChecker = this.promptUserPickChecker(freeCheckers, currentplayer); //ask user to pick a checker to move
                                        destination = myBoard.calculateMoves(pickedChecker, diceValues, currentplayer); // calculate the possible destinations for that checker
+                                       int borneoffp2 = 0;
+                                       int borneoffp1 = 0;
 
                                        for (int i = 0; i < destination.size(); i++) //show possible destinations of that checker to user
                                        {
@@ -699,7 +706,8 @@ class Game {
                                                System.out.println("This Checker can move to: " + (24 - destination.get(i)));
                                            }
                                        }
-                                       diceValues = myBoard.promptUserPickDestination(pickedChecker, destination, currentplayer, diceValues); //ask user to pick destination and calculate new dice values
+
+                                       diceValues = myBoard.promptUserPickDestination(pickedChecker, destination, currentplayer, diceValues,borneoffp1, borneoffp2 ); //ask user to pick destination and calculate new dice values
 
 
                                        freeCheckers = myBoard.findFreeCheckers(currentplayer, diceValues); //check if there are movable checkers left after the move with current dice combination

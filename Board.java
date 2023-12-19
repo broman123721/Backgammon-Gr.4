@@ -70,18 +70,18 @@ public class Board
     public void createBoard() //Inserts Checkers intheir initial positions
     {
 
-        fillPoints(1,2,ANSI_RED);
+       /* fillPoints(1,2,ANSI_RED);
         fillPoints(6,5,ANSI_WHITE);
         fillPoints(8,3,ANSI_WHITE);
         fillPoints(12,5,ANSI_RED);
         fillPoints(13,5,ANSI_WHITE);
         fillPoints(17,3,ANSI_RED);
         fillPoints(19,5,ANSI_RED);
-        fillPoints(24,2,ANSI_WHITE);
+        fillPoints(24,2,ANSI_WHITE);*/
 
          //for testing Bearing off
 
-       /* fillPoints(24,3,ANSI_RED);
+        fillPoints(24,3,ANSI_RED);
         fillPoints(23,5,ANSI_RED);
         fillPoints(22,2,ANSI_RED);
         fillPoints(21,5,ANSI_RED);
@@ -89,7 +89,7 @@ public class Board
         fillPoints(1,5,ANSI_WHITE);
         fillPoints(2,3,ANSI_WHITE);
         fillPoints(3,5,ANSI_WHITE);
-        fillPoints(4,2,ANSI_WHITE);*/
+        fillPoints(4,2,ANSI_WHITE);
 
     }
     public int getPipCount(int playerMoving)
@@ -808,7 +808,7 @@ public class Board
         }
         return ret;
     }
-    public int[] promptUserPickDestination(int pickedChecker , List<Integer> destinations, int playerMoving, int[] dice) // ask user to pick the destination of Checker
+    public int[] promptUserPickDestination(int pickedChecker , List<Integer> destinations, int playerMoving, int[] dice, int bearoffp1, int bearoffp2) // ask user to pick the destination of Checker
     {
         int[] ret = new int[3];
         ret = dice;
@@ -817,6 +817,8 @@ public class Board
         Scanner scanner = new Scanner(System.in);
         System.out.println("Where would you like to place your checker?: ");
         int choice_int = 0;
+        bearoffp1 = this.borneOffp1;
+        bearoffp2 = this.borneOffp2;
 
         while (!successfulPick) {
             for (int i = 0; i < destinations.size(); i++) //print all possibilities
@@ -836,12 +838,24 @@ public class Board
                 if (choice_int >= 0 && choice_int < destinations.size())// if move is legal make it and highlight the moved checker
 
                 {
-                    if (destinations.get(choice_int) == -1 || destinations.get(choice_int) == 24) {
+                    if (destinations.get(choice_int) == -1 || destinations.get(choice_int) == 24) { //bear off
                         Checker help = returnTop(pickedChecker);
                         int height = help.getPosition_int();
                         Board_Checker2darr[pickedChecker][height] = null;
                         successfulPick = true;
                         printBoard(playerMoving);
+
+                        // Increment bear-off count based on the player
+                        if (playerMoving == 1) {
+                            bearoffp1++;
+                            System.out.println("Player 1 has borne off a checker. Count: " + bearoffp1);
+                        } else if (playerMoving == 2) {
+                            bearoffp2++;
+                            System.out.println("Player 2 has borne off a checker. Count: " + bearoffp2);
+                        }
+                        borneOffp1 = bearoffp1;
+                        borneOffp2 = bearoffp2;
+
                     } else {
                         moveChecker(pickedChecker, destinations.get(choice_int), playerMoving);
                         highlightOneheckerandPrint(destinations.get(choice_int), playerMoving);
@@ -903,6 +917,7 @@ public class Board
 
            }
        }
+
        return ret;
 
    }
