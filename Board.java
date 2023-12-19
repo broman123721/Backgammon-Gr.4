@@ -808,72 +808,74 @@ public class Board
         }
         return ret;
     }
-   public int[] promptUserPickDestination(int pickedChecker , List<Integer> destinations, int playerMoving, int[] dice) // ask user to pick the destination of Checker
-   {
-       int[] ret =new int[3];
-       ret=dice;
-       boolean succesfullPick=false;
-       boolean resetflag =false;
-       Scanner scanner = new Scanner(System.in);
-       System.out.println("Where would you like to place your checker?: ");
-       int choice_int=0;
-       while(succesfullPick==false)
-       {
-           for(int i =0;i<destinations.size();i++) //print all possibilities
-           {
-               if(playerMoving==1)
-               {
-                   System.out.println("Enter "+(i+1)+" to move Checker to position "+(destinations.get(i)+1));
-               }
-               if(playerMoving==2)
-               {
-                   System.out.println("Enter "+(i+1)+" to move Checker to position "+(24-(destinations.get(i))));
-               }
+    public int[] promptUserPickDestination(int pickedChecker , List<Integer> destinations, int playerMoving, int[] dice) // ask user to pick the destination of Checker
+    {
+        int[] ret = new int[3];
+        ret = dice;
+        boolean successfulPick = false;
+        boolean resetFlag = false;
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Where would you like to place your checker?: ");
+        int choice_int = 0;
 
-           }
-           choice_int = scanner.nextInt()-1; // get user input
+        while (!successfulPick) {
+            for (int i = 0; i < destinations.size(); i++) //print all possibilities
 
-           if((choice_int>=0)&&(choice_int<destinations.size())) // if move is legal make it and highlight the moved checker
-           {
-               if((destinations.get(choice_int)==-1)||(destinations.get(choice_int)==24)) // bear off
-               {
-                   Checker help =returnTop(pickedChecker);
-                   int height=help.getPosition_int();
-                   Board_Checker2darr[pickedChecker][height]=null;
-                   succesfullPick=true;
-                   printBoard(playerMoving);
-               }
-               else
-               {
-                   moveChecker(pickedChecker, destinations.get(choice_int), playerMoving);
-                   highlightOneheckerandPrint(destinations.get(choice_int),playerMoving);
-                   succesfullPick=true;
+            {
+                if (playerMoving == 1) {
+                    System.out.println("Enter " + (i + 1) + " to move Checker to position " + (destinations.get(i) + 1));
+                }
+                if (playerMoving == 2) {
+                    System.out.println("Enter " + (i + 1) + " to move Checker to position " + (24 - (destinations.get(i))));
+                }
+            }
 
-               }
+            try {
+                choice_int = scanner.nextInt() - 1;
 
-           }
-           else
-           {
-               System.out.println("Wrong input, try again!");
-           }
-       }
+                if (choice_int >= 0 && choice_int < destinations.size())// if move is legal make it and highlight the moved checker
 
-       //Find the move that was made and set the according dice to 0, This is necessary as next loop iteration of playGame() will then calculate possible moves
+                {
+                    if (destinations.get(choice_int) == -1 || destinations.get(choice_int) == 24) {
+                        Checker help = returnTop(pickedChecker);
+                        int height = help.getPosition_int();
+                        Board_Checker2darr[pickedChecker][height] = null;
+                        successfulPick = true;
+                        printBoard(playerMoving);
+                    } else {
+                        moveChecker(pickedChecker, destinations.get(choice_int), playerMoving);
+                        highlightOneheckerandPrint(destinations.get(choice_int), playerMoving);
+                        successfulPick = true;
+                    }
+                } else {
+                    throw new InvalidEntryException("Invalid entry. Please enter a valid number from the list.");
+                }
+            } catch (java.util.InputMismatchException e) {
+                // Handle the case where the user enters a non-integer
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine(); // Consume the invalid input
+            } catch (InvalidEntryException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+
+        //Find the move that was made and set the according dice to 0, This is necessary as next loop iteration of playGame() will then calculate possible moves
        //with updated dice
        if(playerMoving==1)
        {
            int movedistance = pickedChecker - destinations.get(choice_int);
-           if((movedistance==dice[0])&&(resetflag==false)) // resetflag prevents both dice getting wiped when they are the same on double round
+           if((movedistance==dice[0])&&(resetFlag==false)) // resetflag prevents both dice getting wiped when they are the same on double round
            {
                dice[0]=0;
-               resetflag=true;
+               resetFlag=true;
            }
-           if((movedistance==dice[1])&&(resetflag==false))
+           if((movedistance==dice[1])&&(resetFlag==false))
            {
                dice[1]=0;
-               resetflag=true;
+               resetFlag=true;
            }
-           if(movedistance == (dice[0] + dice[1])&&(resetflag==false))
+           if(movedistance == (dice[0] + dice[1])&&(resetFlag==false))
            {
                dice[0]=0;
                dice[1]=0;
@@ -884,17 +886,17 @@ public class Board
        {
 
            int movedistance =destinations.get(choice_int) - pickedChecker;
-           if((movedistance==dice[0])&&(resetflag==false))
+           if((movedistance==dice[0])&&(resetFlag==false))
            {
                dice[0]=0;
-               resetflag=true;
+               resetFlag=true;
            }
-           if((movedistance==dice[1])&&(resetflag==false))
+           if((movedistance==dice[1])&&(resetFlag==false))
            {
                dice[1]=0;
-               resetflag=true;
+               resetFlag=true;
            }
-           if(movedistance == (dice[0] + dice[1])&&(resetflag==false))
+           if(movedistance == (dice[0] + dice[1])&&(resetFlag==false))
            {
                dice[0]=0;
                dice[1]=0;
