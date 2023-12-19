@@ -842,8 +842,6 @@ public class Board
                    Board_Checker2darr[pickedChecker][height]=null;
                    succesfullPick=true;
                    printBoard(playerMoving);
-                   if (playerMoving == 1) borneOffp1 += 1;
-                   if (playerMoving == 2) borneOffp2 += 1;
                }
                else
                {
