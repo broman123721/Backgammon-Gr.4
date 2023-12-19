@@ -784,38 +784,37 @@ class Game {
             }
 
     }
-    public int promptUserPickChecker(List<Integer> movableCheckers, int playerMoving) // asks user to pick a checker
-    {
+    public int promptUserPickChecker(List<Integer> movableCheckers, int playerMoving) {
         Scanner scanner = new Scanner(System.in);
-        boolean succesfullPick=false;
+        boolean successfulPick = false;
         System.out.println();
-        int choice_int=0;
-        while(succesfullPick==false)
-        {
-            for(int i =0;i<movableCheckers.size();i++)
-            {
-                if(playerMoving==1)
-                {
-                    System.out.println("Enter "+(i+1)+" to move Checker at position "+(movableCheckers.get(i)+1));
-                }
-                if(playerMoving==2)
-                {
-                    System.out.println("Enter "+(i+1)+" to move Checker at position "+(24-(movableCheckers.get(i))));
-                }
+        int choice_int = 0;
 
+        while (!successfulPick) {
+            for (int i = 0; i < movableCheckers.size(); i++) {
+                if (playerMoving == 1) {
+                    System.out.println("Enter " + (i + 1) + " to move Checker at position " + (movableCheckers.get(i) + 1));
+                }
+                if (playerMoving == 2) {
+                    System.out.println("Enter " + (i + 1) + " to move Checker at position " + (24 - (movableCheckers.get(i))));
+                }
             }
+
             System.out.println();
-            choice_int = scanner.nextInt()-1; //remove offset from prompt
+            try {
+                choice_int = scanner.nextInt() - 1; // remove offset from prompt
 
-            if((choice_int>=0)&&(choice_int<movableCheckers.size()))
-            {
-               succesfullPick=true;
-
-            }
-            else
-            {
-                System.out.println("Wrong input, try again!");
-                succesfullPick=false;
+                if (choice_int >= 0 && choice_int < movableCheckers.size()) {
+                    successfulPick = true;
+                } else {
+                    throw new InvalidEntryException("Invalid entry. Please enter a valid number from the list.");
+                }
+            } catch (java.util.InputMismatchException e) {
+                // Handle the case where the user enters a non-integer
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine(); // Consume the invalid input
+            } catch (InvalidEntryException e) {
+                System.out.println(e.getMessage());
             }
         }
 
