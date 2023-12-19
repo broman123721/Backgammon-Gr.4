@@ -726,11 +726,11 @@ class Game {
                                            if (loser == 2){
                                                if(myBoard.checkForGammon(loser) == true && myBoard.canBearOff(2) == true){
                                                    score2 -= 1*doublingCube.getValue();
-                                                   System.out.println("Player 2: " + player2.getName() + "You have Gammoned! :(");
+                                                   System.out.println("Player 2: " + player2.getName() + "You Lost! You have Gammoned! :(");
                                                } //stake decrease
                                                else if (myBoard.checkForGammon(loser) == true && myBoard.canBearOff(2) == false) {
                                                    score2 -= 3*doublingCube.getValue();
-                                                   System.out.println("Player 2: " + player2.getName() + "You have BackGammoned! :(");
+                                                   System.out.println("Player 2: " + player2.getName() + "You Lost! You have BackGammoned! :(");
                                                }
                                                else score2 -= 1;
                                                System.out.println("Player 2:" + player2.getName() +" You have lost you lose a point");
@@ -738,11 +738,11 @@ class Game {
                                            if (loser == 1){
                                                if(myBoard.checkForGammon(loser) == true && myBoard.canBearOff(1) == true){
                                                    score1 -= 1*doublingCube.getValue();
-                                                   System.out.println("Player 1: " + player1.getName() + "You have Gammoned! :(");
+                                                   System.out.println("Player 1: " + player1.getName() + "You Lost! You have Gammoned! :(");
                                                } //stake decrease
                                                else if (myBoard.checkForGammon(loser) == true && myBoard.canBearOff(1) == false) {
                                                    score1 -= 3*doublingCube.getValue();
-                                                   System.out.println("Player 1: " + player1.getName() + "You have BackGammoned! :(");
+                                                   System.out.println("Player 1: " + player1.getName() + "You Lost! You have BackGammoned! :(");
                                                }
                                                else score1 -= 1;
                                                System.out.println("Player 1:" + player1.getName() +" You have lost you lose a point");
