@@ -445,7 +445,7 @@ class Game {
 
             int currentplayer = -1;
             boolean dicedraw = true;
-            int isdouble_int = 0;
+            int isdouble_int = 1;
             int dice_copy = 0;
             boolean isdouble_bool = false;
 
@@ -627,33 +627,40 @@ class Game {
 
 
                                diceValues = Die.rollDice();
+                               if (diceValues[0] == diceValues[1]){
+                                   System.out.println("You have a double!");
+                                   System.out.println("Play your two sets of dice sequentially");
+                                   isdouble_bool = true;
+                               }else {
+                                   isdouble_bool = false;
+                               }
 
 
-                               if (diceValues[0] == diceValues[1]) // double was thrown
+                               /*if (diceValues[0] == diceValues[1]) // double was thrown
                                {
                                    System.out.println("You have a double!");
                                    System.out.println("Play your two sets of dice sequentially");
                                    isdouble_int = 0; //while loop will be ran twice
                                    isdouble_bool = true; // needed so on second iteration of loop the dice can be rewritten to the original throw
-                                   dice_copy = diceValues[0]; // saves the dice double that was thrown
                                } else {
                                    isdouble_int = 1; // regular round only goes through loop once
-                               }
+                               }*/
                            }
 
                            int total = 0;
 
-                           while (isdouble_int < 2) // when a double is rolled the loop is ran twice
+                           while (isdouble_bool) // when a double is rolled the loop is ran twice
                            {
-                               if ((isdouble_bool == true) && (isdouble_int == 1)) //reset dice for second round of moves in case of double
+                               if ((isdouble_bool) && (isdouble_int == 1)) //reset dice for second round of moves in case of double
                                {
                                    movesPossible = true;
-                                   diceValues[0] = dice_copy;
-                                   diceValues[1] = dice_copy;
+                                   diceValues[0] = diceValues[2];
+                                   diceValues[1] = diceValues[3];
                                    System.out.println("Second Round of Your Double");
+                                   isdouble_bool = false;
                                }
 
-                               while (movesPossible == true)// player has moves left to make
+                               while (movesPossible)// player has moves left to make
                                {
                                    freeCheckers.clear(); // clear calculated freeCheckers and destinations from last round
                                    destination.clear();
