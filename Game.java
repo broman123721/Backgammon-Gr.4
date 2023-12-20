@@ -628,17 +628,21 @@ class Game {
 
                                diceValues = Die.rollDice();
 
-
-                               if (diceValues[0] == diceValues[1]) // double was thrown
-                               {
+                               if (diceValues[0] == diceValues[1]) {
                                    System.out.println("You have a double!");
                                    System.out.println("Play your two sets of dice sequentially");
-                                   isdouble_int = 0; //while loop will be ran twice
-                                   isdouble_bool = true; // needed so on second iteration of loop the dice can be rewritten to the original throw
-                                   dice_copy = diceValues[0]; // saves the dice double that was thrown
+                                   isdouble_int = 0;
+                                   isdouble_bool = true;
+                                   dice_copy = diceValues[0];
+
+                                   // Add two extra dice with the amount rolled in the double
+                                   int extraDiceValue = dice_copy;
+                                   System.out.println("Extra dice value: " + extraDiceValue);
+                                   diceValues = new int[]{dice_copy, dice_copy, extraDiceValue, extraDiceValue};
                                } else {
-                                   isdouble_int = 1; // regular round only goes through loop once
+                                   isdouble_int = 1;
                                }
+
                            }
 
                            int total = 0;
