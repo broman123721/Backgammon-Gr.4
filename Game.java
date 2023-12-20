@@ -679,6 +679,7 @@ class Game {
                                            isdouble_int = 2; // cancel double
 
                                        }
+                                       //
 
                                    } else if (movesPossible == true) //free moves
                                    {
