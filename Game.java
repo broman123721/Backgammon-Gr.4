@@ -756,7 +756,7 @@ class Game {
                                                else score1 -= 1;
                                                System.out.println("Player 1:" + player1.getName() +" You have lost you lose a point");
                                            }
-                                           System.out.println("Score for player 1: " + score1 + "Score for player 2: " + score2);
+                                           System.out.println("Score for player 1: " + score1 + " Score for player 2: " + score2);
                                        }
                                    }
 

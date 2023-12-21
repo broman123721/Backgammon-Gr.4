@@ -14,10 +14,12 @@ public class main
     public static void main(String[] args) throws InvalidEntryException {
       int player =2;
 
+
       Board myBoard=new Board(8);
 
       Player player1=new Player();
       Player player2=new Player();
+      boolean nextGame = false;
      //Removed test code to make sure player input features work correctly.
 
         while(true)
@@ -43,18 +45,29 @@ public class main
             int matchLength = Integer.parseInt(scanner.nextLine());
             Game backgammonGame = new Game(player1, player2, matchLength);
 
-            while((player1.getScore()!=matchLength) ||(player1.getScore()!=matchLength))
+            if(!nextGame)
+            {
+              System.out.println("Let's start the first game!");
+              nextGame = true;
+            }
+            else {
+              System.out.println("Let's start the next game!");
+            }
+
+            if((player1.getScore()!=matchLength) ||(player2.getScore()!=matchLength))
             {
               myBoard.createBoard();
               backgammonGame.playGame();
             }
-            if(player1.getScore()>player2.getScore())
+            else if(player1.getScore() >= matchLength || player1.getScore() > player2.getScore())
             {
               System.out.println(player1.getName()+" Won!");
+              break;
             }
-            if(player1.getScore()<player2.getScore())
+            else if(player2.getScore() >= matchLength || player1.getScore() < player2.getScore())
             {
               System.out.println(player2.getName()+" Won!");
+              break;
             }
           }
           if("T".equals(choice))
