@@ -36,7 +36,7 @@ public class main
           System.out.println("Would you like to play or test?!");
 
           System.out.println("Enter P for play and T for test");
-          String choice = scanner.nextLine();
+          String choice = scanner.nextLine().toUpperCase();
           if("P".equals(choice))
           {
             System.out.print("Enter the match length:");
