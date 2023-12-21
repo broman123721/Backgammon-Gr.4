@@ -635,6 +635,7 @@ class Game {
                                    System.out.println("Play your two sets of dice sequentially");
                                    isdouble_int = 0; //while loop will be ran twice
                                    isdouble_bool = true; // needed so on second iteration of loop the dice can be rewritten to the original throw
+                                   dice_copy = diceValues[0];
                                } else {
                                    isdouble_int = 1; // regular round only goes through loop once
                                }
@@ -650,6 +651,7 @@ class Game {
                                    diceValues[0] = dice_copy;
                                    diceValues[1] = dice_copy;
                                    System.out.println("Second Round of Your Double");
+                                   isdouble_bool = false;
                                }
 
                                while (movesPossible == true)// player has moves left to make
@@ -678,7 +680,6 @@ class Game {
                                            isdouble_int = 2; // cancel double
 
                                        }
-                                       //
 
                                    } else if (movesPossible == true) //free moves
                                    {
@@ -783,11 +784,6 @@ class Game {
 
                 player1.setScore(player1.getScore()+score1);
                 player2.setScore(player2.getScore()+score2);
-
-                /*if (score1 != matchLength | score2 != matchLength){
-                    endGame = false;
-                }*/ //Confused on match ending if score matches match length or if match length is for how many games
-                    //the users play.
 
             }
 
