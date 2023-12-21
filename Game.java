@@ -646,6 +646,7 @@ class Game {
                                    diceValues[0] = dice_copy;
                                    diceValues[1] = dice_copy;
                                    System.out.println("Second Round of Your Double");
+                                   isdouble_bool = false;
                                }
 
                                while (movesPossible == true)// player has moves left to make
