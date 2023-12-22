@@ -19,10 +19,10 @@ public class main
 
       Player player1=new Player();
       Player player2=new Player();
+      boolean quitGame1 = false;
       boolean nextGame = false;
       boolean gameOn = true;
       boolean endMatch = false;
-     //Removed test code to make sure player input features work correctly.
 
         while(!endMatch)
         {
@@ -37,10 +37,9 @@ public class main
           System.out.print("Enter the name of player 2: ");
           player2.setName(scanner.nextLine());
           player2.setScore(0);
-          System.out.println("Would you like to play or test?!");
 
-          System.out.println("Enter P for play and T for test");
-          String choice = scanner.nextLine().toUpperCase();
+          String choice = getGameChoice(scanner);
+
           if("P".equals(choice))
           {
 
@@ -56,7 +55,7 @@ public class main
                 System.out.println("Let's start the next game!");
               }
 
-              Game backgammonGame = new Game(player1, player2, matchLength);
+              Game backgammonGame = new Game(player1, player2, matchLength, quitGame1);
 
             while(gameOn)
             {
@@ -64,6 +63,8 @@ public class main
               {
                 myBoard.createBoard();
                 backgammonGame.playGame();
+                if (backgammonGame.getQuitGame()) gameOn = false;
+
               }
               else if(player1.getScore() >= matchLength || player1.getScore() > player2.getScore())
               {
@@ -75,13 +76,13 @@ public class main
                 System.out.println(player2.getName()+" Won!");
                 gameOn = false;
               }
+
             }
             endMatch = true;
           }
           else if("T".equals(choice))
           {
-            Game backgammonGame = new Game(player1, player2, 100);
-            backgammonGame.testGame();
+            testGame backgammonGame = new testGame(player1, player2, 100);
           }
 
         }
@@ -89,58 +90,20 @@ public class main
         System.out.println(" ");
         System.out.println("The match is over thanks for playing! :)");
 
-/*
-      List<Integer> freeCheckers = new ArrayList<>();
-      List<Integer> destination = new ArrayList<>();
-      int[] dice={4,4}; //sample dice to test calcmoves
-      freeCheckers =myBoard.findFreeCheckers(player,dice); // freeCheckers contains all free checkerindices for player2 now (0 based)
-
-      for(int i = 0; i< freeCheckers.size(); i++)
-      {
-          System.out.println("Free Checker at "+ freeCheckers.get(i));
-      }
-
-        myBoard.highlightCheckersandPrint(freeCheckers,player); // highlights checkers
-
-        int pickedChecker=backgammonGame.promptUserPickChecker(freeCheckers,player); // ask user to pick checker
-
-        System.out.println("picked array index. "+pickedChecker);
-        System.out.println("picked checkernumber for player2: "+(24-pickedChecker));
-        destination=myBoard.calculateMoves(pickedChecker,dice,player);
-
-        for(int i=0;i<destination.size();i++) {
-
-          System.out.println("This Checker can move to: " + (destination.get(i))); //maybe put this in a variable
-
-
-        }
-      //Damis Edits
-      dice=myBoard.promptUserPickDestination(pickedChecker,destination,player,dice);
-      destination.clear();;
-      destination=myBoard.calculateMoves(pickedChecker,dice,player);
-      for(int i=0;i<destination.size();i++)
-      {
-
-        System.out.println("This Checker can move to: " + (destination.get(i))); //maybe put this in a variable
-      }
-
-
-*/
     }
-      //END TEST CODE
-
-      // Comment for development
-      /*System.out.println();
-      System.out.println("Welcome to Backgammon!");
-
-      System.out.print("Enter the name of player 1: ");
-      String player1 = scanner.nextLine();
-
-      System.out.print("Enter the name of player 2: ");
-      String player2 = scanner.nextLine();
-
-      Game backgammonGame = new Game(player1, player2);
-        backgammonGame.playGame();*/
+  private static String getGameChoice(Scanner scanner) {
+    String choice;
+    while (true) {
+      System.out.println("Would you like to play or test?!");
+      System.out.println("Enter P for play and T for test");
+      choice = scanner.nextLine().toUpperCase();
+      if ("P".equals(choice) || "T".equals(choice)) {
+        return choice;
+      } else {
+        System.out.println("Invalid entry. Please enter P or T.");
+      }
+    }
+  }
 
 }
 

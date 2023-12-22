@@ -19,7 +19,6 @@ class Die {
         int result2 = die2.roll();
 
         return new int[]{result1, result2};
-
     }
 
      //Dice command causes the subsequent dice roll
