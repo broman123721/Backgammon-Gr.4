@@ -17,7 +17,7 @@ class DoublingCube extends Die {
             currentValue *= 2;
             System.out.println("Doubling cube is now at " + currentValue);
         } else {
-            System.out.println("Doubling cube is already at the maximum value (32).");
+            System.out.println("Doubling cube is already at the maximum value (64).");
         }
     }
     // Reset the doubling cube to its initial value

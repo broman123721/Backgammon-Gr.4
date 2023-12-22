@@ -60,7 +60,7 @@ public class main
 
             while(gameOn)
             {
-              if(player1.getScore() < matchLength || player2.getScore() < matchLength)
+              if(player1.getScore() < matchLength && player2.getScore() < matchLength)
               {
                 myBoard.createBoard();
                 backgammonGame.playGame();
