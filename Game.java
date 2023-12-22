@@ -448,6 +448,7 @@ class Game {
             int isdouble_int = 0;
             int dice_copy = 0;
             boolean isdouble_bool = false;
+            boolean gameisover = false;
 
 
             int round = 0;
@@ -508,7 +509,9 @@ class Game {
             int pickedChecker = -1;
             boolean endGame = false;
 
-            while (true) {
+
+
+            while (!gameisover) {
 
                 if (endGame == false) {
                     Scanner scanner = new Scanner(System.in);
@@ -757,6 +760,7 @@ class Game {
                                                System.out.println("Player 1:" + player1.getName() +" You have lost you lose a point");
                                            }
                                            System.out.println("Score for player 1: " + score1 + " Score for player 2: " + score2);
+                                           gameisover = true;
                                        }
                                    }
 

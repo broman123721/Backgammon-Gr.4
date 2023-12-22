@@ -20,9 +20,11 @@ public class main
       Player player1=new Player();
       Player player2=new Player();
       boolean nextGame = false;
+      boolean gameOn = true;
+      boolean endMatch = false;
      //Removed test code to make sure player input features work correctly.
 
-        while(true)
+        while(!endMatch)
         {
           Scanner scanner = new Scanner(System.in);
           System.out.println();
@@ -41,42 +43,51 @@ public class main
           String choice = scanner.nextLine().toUpperCase();
           if("P".equals(choice))
           {
+
             System.out.print("Enter the match length:");
             int matchLength = Integer.parseInt(scanner.nextLine());
-            Game backgammonGame = new Game(player1, player2, matchLength);
 
-            if(!nextGame)
-            {
-              System.out.println("Let's start the first game!");
-              nextGame = true;
-            }
-            else {
-              System.out.println("Let's start the next game!");
-            }
+              if(!nextGame)
+              {
+                System.out.println("Let's start the first game!");
+                nextGame = true;
+              }
+              else {
+                System.out.println("Let's start the next game!");
+              }
 
-            if((player1.getScore()!=matchLength) ||(player2.getScore()!=matchLength))
+              Game backgammonGame = new Game(player1, player2, matchLength);
+
+            while(gameOn)
             {
-              myBoard.createBoard();
-              backgammonGame.playGame();
+              if(player1.getScore() < matchLength || player2.getScore() < matchLength)
+              {
+                myBoard.createBoard();
+                backgammonGame.playGame();
+              }
+              else if(player1.getScore() >= matchLength || player1.getScore() > player2.getScore())
+              {
+                System.out.println(player1.getName()+" Won!");
+                gameOn = false;
+              }
+              else if(player2.getScore() >= matchLength || player1.getScore() < player2.getScore())
+              {
+                System.out.println(player2.getName()+" Won!");
+                gameOn = false;
+              }
             }
-            else if(player1.getScore() >= matchLength || player1.getScore() > player2.getScore())
-            {
-              System.out.println(player1.getName()+" Won!");
-              break;
-            }
-            else if(player2.getScore() >= matchLength || player1.getScore() < player2.getScore())
-            {
-              System.out.println(player2.getName()+" Won!");
-              break;
-            }
+            endMatch = true;
           }
-          if("T".equals(choice))
+          else if("T".equals(choice))
           {
             Game backgammonGame = new Game(player1, player2, 100);
             backgammonGame.testGame();
           }
 
         }
+
+        System.out.println(" ");
+        System.out.println("The match is over thanks for playing! :)");
 
 /*
       List<Integer> freeCheckers = new ArrayList<>();
