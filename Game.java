@@ -226,7 +226,7 @@ class Game {
                                System.out.println("Your Pip count is:" + pipp2);
                            }
                        }
-
+//
                        else if("DC".equals(choice)){
                            System.out.println("Enter the first dice value:");
                            customDie1 = scanner.nextInt();
