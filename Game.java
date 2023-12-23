@@ -141,7 +141,7 @@ class Game {
 
                        }
 
-                       String choice = null;
+                       String choice = null;//Initialise
 
                        if(!testCommandEntry){
                            choice = scanner.nextLine().toUpperCase();
