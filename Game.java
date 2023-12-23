@@ -173,7 +173,7 @@ class Game {
                            break;
                        }
 
-                       else if("D".equals(choice) && (currentplayer == doubleOwner)){
+                       else if("D".equals(choice) && (currentplayer == doubleOwner)){//
                            if (currentplayer == 1 && doubleOwner == 1) {
                                System.out.println("Player 1:" + player1.getName() + " has requested to double.");
                            }
