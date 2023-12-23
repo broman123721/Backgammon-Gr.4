@@ -43,7 +43,7 @@ public class main
           if("P".equals(choice))
           {
 
-            System.out.print("Enter the match length:");
+            System.out.println("Enter the match length:");
             int matchLength = Integer.parseInt(scanner.nextLine());
 
               if(!nextGame)
@@ -80,9 +80,10 @@ public class main
             }
             endMatch = true;
           }
-          else if("T".equals(choice))
+          else if("T".equals(choice)) //I think this is redundant might turn to it to the quit function
           {
-            testGame backgammonGame = new testGame(player1, player2, 100);
+            System.out.println("Starting the testing game file...");
+            Game backgammonGame = new Game(player1, player2, 100, quitGame1);
           }
 
         }

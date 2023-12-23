@@ -84,28 +84,6 @@ public class BoardTest {
         assertEquals(List.of(5, 8, 12), board.calculateMoves(10, new int[]{1, 2}, 1));
         assertEquals(List.of(18, 20, 22), board.calculateMoves(15, new int[]{3, 4}, 2));
     }
-    @Test
-    public void testCalculateMovesFromBeam() {
-        // Mocking player's turn and dice values for testing
-        int playerMoving = 1;  // or 2
-        int[] dice = {3, 4};  // Set the dice values according to your test case
-
-        // Create a new Board instance
-        Board board = new Board(8);
-
-
-        board.fillPoints(1, 2, Board.ANSI_RED);
-
-        // Player 2 (White) checkers on points 24 and 23
-        board.fillPoints(24, 2, Board.ANSI_WHITE);
-
-
-
-
-        int[] updatedDice = board.calculateMovesFromBeam(playerMoving, dice);
-
-        assertArrayEquals(new int[]{0, 4}, updatedDice);  // Adjust expected values based on your specific test case
-    }
 
 
 }

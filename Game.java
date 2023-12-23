@@ -32,13 +32,16 @@ class Game {
             boolean gameisover = false;
             int customDie1 = 0;
             int customDie2 = 0;
-            boolean manualEntry = false;
+            boolean manualDiceEntry = false;
+            boolean testCommandEntry = false;
+            int currentCommandIndex = 0;
 
 
             int round = 0;
             int[] diceValues = new int[4];
             int doubleOwner = 0;
             DoublingCube doublingCube = new DoublingCube();
+            String[] commands = null;
 
             System.out.println("Let's roll the dice to determine the starting player...");
             while (dicedraw == true) {
@@ -97,7 +100,7 @@ class Game {
 
             while (!gameisover && !quitGame) {
 
-                if (endGame == false) {
+                if (!endGame) {
                     Scanner scanner = new Scanner(System.in);
                     //Gives user the choice to roll or to check the pip count(IDK what we're hinting because we basically do that already with our move functions)
 
@@ -116,7 +119,7 @@ class Game {
                            System.out.println("- Type 'M' if you would like to display the match length and scores.");
                            System.out.println("- Type 'D' if you would like to use the doubling.");
                            System.out.println("- Type 'DC' if you would like to manually enter dice values.");
-                           System.out.println("- Type 'T' if you would like to run a test file to process commands");
+                           System.out.println("- Type 'T' if you would like to run a test file to process commands.");
 
 
                        } else if (doubleOwner == 2 && currentplayer == 2) {
@@ -126,7 +129,7 @@ class Game {
                            System.out.println("- Type 'M' if you would like to display the match length and scores.");
                            System.out.println("- Type 'D' if you would like to use the doubling.");
                            System.out.println("- Type 'DC' if you would like to manually enter dice values.");
-                           System.out.println("- Type 'T' if you would like to run a test file to process commands");
+                           System.out.println("- Type 'T' if you would like to run a test file to process commands.");
 
                        } else {
                            System.out.println("- Type 'R' if you would like to roll the dice.");
@@ -134,10 +137,33 @@ class Game {
                            System.out.println("- Type 'Q' if you would like to quit the game.");
                            System.out.println("- Type 'M' if you would like to display the match length and scores.");
                            System.out.println("- Type 'DC' if you would like to manually enter dice values.");
-                           System.out.println("- Type 'T' if you would like to run a test file to process commands");
+                           System.out.println("- Type 'T' if you would like to run a test file to process commands.");
 
                        }
-                       String choice = scanner.nextLine().toUpperCase();
+
+                       String choice = null;
+
+                       if(!testCommandEntry){
+                           choice = scanner.nextLine().toUpperCase();
+
+                       }
+                       else {
+                           while (currentCommandIndex < commands.length) {
+                               choice = commands[currentCommandIndex];
+
+                               // Process the command here (replace this with your actual logic)
+                               System.out.println("Processing command from file: " + choice);
+
+                               // Increment the index to move to the next command
+                               currentCommandIndex++;
+
+                               // Exit the loop to go back to the main loop for the next iteration
+                               break;
+                           }
+                           if(currentCommandIndex >= commands.length) {
+                               testCommandEntry = false;
+                           }
+                       }
 
 
                        if ("Q".equals(choice)) //quit game
@@ -210,8 +236,28 @@ class Game {
                            if (customDie1 < 1 || customDie1 > 6 || customDie2 < 1 || customDie2 > 6) {
                                throw new InvalidEntryException("Invalid dice values. Please enter values between 1 and 6.");
                            }
-                           manualEntry = true;
+                           manualDiceEntry = true;
                            diceValues = Die.diceEntry(customDie1, customDie2);
+                       }
+
+                       else if("T".equals(choice)){
+
+                           currentCommandIndex = 0;
+                           System.out.println("Please enter the name of the test file:");
+                           String testFileName = scanner.nextLine();
+
+                           try (BufferedReader fileReader = new BufferedReader(new FileReader(testFileName))) {
+                               // Store each line from the file in a string array
+                               commands = fileReader.lines().toArray(String[]::new);
+
+                               // Process each command from the array
+                               for (String command : commands) {
+                                   System.out.println("Processing command from file: " + command);
+                               }
+                           } catch (IOException e) {
+                               System.out.println("Error reading the test file: " + e.getMessage());
+                           }
+                           testCommandEntry = true;
                        }
 
                        else if ("R".equals(choice)) {
@@ -232,11 +278,11 @@ class Game {
                            } else {
                                System.out.println("Rolling the dice...");
 
-                               if (!manualEntry) {
+                               if (!manualDiceEntry) {
                                    diceValues = Die.rollDice();
                                }
                                else {
-                                   manualEntry = false;
+                                   manualDiceEntry = false;
                                }
 
 
