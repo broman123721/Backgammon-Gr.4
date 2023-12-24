@@ -1,17 +1,17 @@
 import java.util.Random;
-
+//die constructor class
 class Die {
     private int sides_int;
     public Die(int sides){
         this.sides_int = sides;
     }
 
-    public int roll(){
+    public int roll(){ //ensures random number generated for each die.
         Random random = new Random();
         return random.nextInt(sides_int) + 1;
     }
 
-    public static int[] rollDice(){
+    public static int[] rollDice(){ //Rolls dice
         Die die1 = new Die(6); // Six-sided die
         Die die2 = new Die(6); // Another six-sided die
 
@@ -21,7 +21,7 @@ class Die {
         return new int[]{result1, result2};
     }
 
-     //Dice command causes the subsequent dice roll
+     //DiceEntry command causes the subsequent dice roll to equal the numbers input from the user
      public static int[] diceEntry(int die1, int die2){
         System.out.println("*MANUAL DICE ENTRY*");
 

@@ -66,7 +66,7 @@ public class Board
 
         }
     }
-    public void createBoard() //Inserts Checkers intheir initial positions
+    public void createBoard() //Inserts Checkers in their initial positions
     {
 
         fillPoints(1,2,ANSI_RED);
@@ -968,7 +968,7 @@ public class Board
         }
     }
 
-    boolean checkForGammon(int loser)
+    boolean checkForGammon(int loser) //Checks if a Gammon has occured.
     {
         if(loser == 1){
             if(borneOffp1 == 0) {

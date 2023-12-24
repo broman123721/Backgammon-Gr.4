@@ -4,15 +4,15 @@ class DoublingCube extends Die {
     private int currentValue;
 
     public DoublingCube() {
-        super(6); // Six-sided doubling cube may not need this can remove in testing.
+        super(6); // Six-sided doubling cube
         this.currentValue = 1; // Initial value of the doubling cube
     }
 
     public int getValue() {
         return currentValue;
-    }
+    } //gets current value of the cube
 
-    public void doubleCube() {
+    public void doubleCube() { //Doubles values on the cube until it reaches it's maximum value.
         if (currentValue < 64) {
             currentValue *= 2;
             System.out.println("Doubling cube is now at " + currentValue);

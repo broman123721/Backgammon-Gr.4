@@ -1,14 +1,15 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-// Convention : Board Array starts bottom right with 0 and is 23 in the top left
-// Player 1 = White moves from top left to bottom right (down the array)
-// Player 2 = Red moves from bottom right to top left (up the array)
-// Both players try to move all their checker into their home base white array index[0-5] red array index [18-23]
-// Careful though in terms of the game point descriptions both try to go from 24 to 1
+/**
+ * Convention : Board Array starts bottom right with 0 and is 23 in the top left
+ * Player 1 = White moves from top left to bottom right (down the array)
+ * Player 2 = Red moves from bottom right to top left (up the array)
+ * Both players try to move all their checker into their home base white array index[0-5] red array index [18-23]
+ * Careful though in terms of the game point descriptions both try to go from 24 to 1
 
-// Index = across the board 0-23 (for simplicity - Player 2 will still be indexed 0-23 within the program and will be converted once displayed to the player)
-// Position = within lane 0-4
+ Index = across the board 0-23 (for simplicity - Player 2 will still be indexed 0-23 within the program and will be converted once displayed to the player)
+ Position = within lane 0-4 */
 public class main
 {
     public static void main(String[] args) throws InvalidEntryException {
@@ -82,9 +83,9 @@ public class main
             gameCounter++;
             endMatch = true;
           }
-          else if("Q".equals(choice)) //I think this is redundant might turn to it to the quit function
+          else if("Q".equals(choice)) //Quit function.
           {
-            System.out.println("Quitting Already? That's wild... Goodbye! :)");
+            System.out.println("Quitting Match...");
             break;
           }
 
@@ -94,9 +95,11 @@ public class main
           System.out.println("Quitting before you start is not winner mentality.");
           System.out.println("However we will overlook it this time...Thanks for CONSIDERING playing I guess! :)");
         }
-        else
-        System.out.println(" ");
-        System.out.println("The match is over thanks for playing! :)");
+        else {
+            System.out.println(" ");
+            System.out.println("The match is over thanks for playing! :)");
+        }
+
 
     }
   private static String getGameChoice(Scanner scanner) {
