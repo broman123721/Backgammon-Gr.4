@@ -494,34 +494,19 @@ class Game {
         return movableCheckers.get(choice_int);
     }
 
-//Created for test classes
+//Created for GameTest class
     public Player getPlayer1() {
         return player1;
-    }
-
-    public void setPlayer1(Player player1) {
-        this.player1 = player1;
     }
 
     public Player getPlayer2() {
         return player2;
     }
 
-    public void setPlayer2(Player player2) {
-        this.player2 = player2;
-    }
-
     public int getMatchLength() {
         return matchLength;
     }
 
-    public void setMatchLength(int matchLength) {
-        this.matchLength = matchLength;
-    }
-
-    public int getCurrentPlayer() {
-        return 1;
-    }
 }
 
 

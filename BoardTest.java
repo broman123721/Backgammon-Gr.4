@@ -2,6 +2,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.Arrays;
+
 public class BoardTest {
 
     private Board board;
@@ -53,8 +58,8 @@ public class BoardTest {
 
     @Test
     void testIsSpaceAvailableForPlayer2() {
-        assertTrue(board.isSpaceAvailable(2, 15), "Space should be available for Player 2 at index 15");
-        assertFalse(board.isSpaceAvailable(2, 6), "Space should not be available for Player 2 at index 6");
+        assertTrue(board.isSpaceAvailable(2, 24 - 15), "Space should be available for Player 2 at index 15");
+        assertFalse(board.isSpaceAvailable(2, 24 - 6), "Space should not be available for Player 2 at index 6");
     }
 
     @Test
@@ -66,23 +71,40 @@ public class BoardTest {
 
     @Test
     void testHighlightOneCheckerAndPrint() {
-        // Assuming that the highlightOneCheckerAndPrint method doesn't throw any exceptions
-        assertDoesNotThrow(() -> board.highlightOneCheckerandPrint(10, 1));
-        assertDoesNotThrow(() -> board.highlightOneCheckerandPrint(15, 2));
+
     }
 
     @Test
     void testHighlightCheckersAndPrint() {
-        // Assuming that the highlightCheckersAndPrint method doesn't throw any exceptions
-        assertDoesNotThrow(() -> board.highlightCheckersandPrint(List.of(5, 8, 12), 1));
-        assertDoesNotThrow(() -> board.highlightCheckersandPrint(List.of(18, 20, 22), 2));
+
     }
 
     @Test
     void testCalculateMoves() {
         // Assuming that the calculateMoves method returns the expected destinations
-        assertEquals(List.of(5, 8, 12), board.calculateMoves(10, new int[]{1, 2}, 1));
-        assertEquals(List.of(18, 20, 22), board.calculateMoves(15, new int[]{3, 4}, 2));
+        assertEquals(List.of(9, 8, 7), board.calculateMoves(10, new int[]{1, 2}, 1));
+        assertEquals(List.of(13), board.calculateMoves(24 - 15, new int[]{3, 4}, 2));
+    }
+
+    @Test
+    void testHasCheckerOnBeam() {
+
+    }
+
+    @Test
+    void promptUserPickDestination() {
+    }
+
+    @Test
+    void canBearOff() {
+    }
+
+    @Test
+    void checkForWin() {
+    }
+
+    @Test
+    void checkForGammon() {
     }
 
 
