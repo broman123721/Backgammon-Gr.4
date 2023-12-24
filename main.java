@@ -7,7 +7,7 @@ import java.util.Scanner;
 // Both players try to move all their checker into their home base white array index[0-5] red array index [18-23]
 // Careful though in terms of the game point descriptions both try to go from 24 to 1
 
-// Index = across the board 0-23 (for simplicity- Player 2 will still be indexed 0-23 within the program and will be converted once displayed to the player)
+// Index = across the board 0-23 (for simplicity - Player 2 will still be indexed 0-23 within the program and will be converted once displayed to the player)
 // Position = within lane 0-4
 public class main
 {
@@ -23,6 +23,7 @@ public class main
       boolean nextGame = false;
       boolean gameOn = true;
       boolean endMatch = false;
+      int gameCounter = 0;
 
         while(!endMatch)
         {
@@ -78,16 +79,22 @@ public class main
               }
 
             }
+            gameCounter++;
             endMatch = true;
           }
-          else if("T".equals(choice)) //I think this is redundant might turn to it to the quit function
+          else if("Q".equals(choice)) //I think this is redundant might turn to it to the quit function
           {
-            System.out.println("Starting the testing game file...");
-            Game backgammonGame = new Game(player1, player2, 100, quitGame1);
+            System.out.println("Quitting Already? That's wild... Goodbye! :)");
+            break;
           }
 
         }
-
+        if (gameCounter == 0){
+          System.out.println(" ");
+          System.out.println("Quitting before you start is not winner mentality.");
+          System.out.println("However we will overlook it this time...Thanks for CONSIDERING playing I guess! :)");
+        }
+        else
         System.out.println(" ");
         System.out.println("The match is over thanks for playing! :)");
 
@@ -95,13 +102,13 @@ public class main
   private static String getGameChoice(Scanner scanner) {
     String choice;
     while (true) {
-      System.out.println("Would you like to play or test?!");
-      System.out.println("Enter P for play and T for test");
+      System.out.println("Would you like to play or quit?!");
+      System.out.println("Enter P for play and Q to quit");
       choice = scanner.nextLine().toUpperCase();
-      if ("P".equals(choice) || "T".equals(choice)) {
+      if ("P".equals(choice) || "Q".equals(choice)) {
         return choice;
       } else {
-        System.out.println("Invalid entry. Please enter P or T.");
+        System.out.println("Invalid entry. Please enter P or Q.");
       }
     }
   }
